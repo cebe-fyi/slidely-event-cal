@@ -1,6 +1,8 @@
 import { isValidDate } from "../../lib/dates/calendar";
 import type { Category, Tag, TeamEvent } from "../events/types";
 import { normalizePaletteColor, paletteColor } from "../../design/system";
+import { isEventPlace } from "../locations/types";
+import { withDemoLocation } from "../locations/event-location";
 
 export type WorkspaceData = {
   version: 1;
@@ -205,6 +207,13 @@ export function parseWorkspace(serialized: string): WorkspaceData {
         isValidDate(event.endDate) &&
         event.endDate >= event.startDate &&
         boundedString(event.location, 160) &&
+        (event.locationKind === undefined ||
+          ["city", "online", "unknown"].includes(
+            event.locationKind as string,
+          )) &&
+        (event.place === undefined || isEventPlace(event.place)) &&
+        (event.locationKind !== "city" || isEventPlace(event.place)) &&
+        (event.place === undefined || event.locationKind === "city") &&
         boundedString(event.description, 3000) &&
         boundedString(event.url, 2000) &&
         (!event.url || /^https?:\/\//i.test(event.url)) &&
@@ -225,6 +234,8 @@ export function parseWorkspace(serialized: string): WorkspaceData {
   // without discarding event data, user-defined names, IDs, links, or trash records.
   return {
     ...data,
+    events: data.events.map(withDemoLocation),
+    trash: data.trash.map(withDemoLocation),
     categories: data.categories.map((item, index) => {
       const preset = normalizePaletteColor(item.color, index);
       return { ...item, color: preset.color, background: preset.background };

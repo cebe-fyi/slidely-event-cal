@@ -17,7 +17,7 @@ A Next.js and TypeScript team event calendar. This first deployable milestone us
 
 ## What comes next
 
-Email OTP and domain restriction, Supabase shared data and admin roles, Gemini enrichment, and production map-provider capacity planning. No private workspace or login protection is claimed by this local sample-data prototype. Use synthetic information only. GitHub upload and Vercel deployment are deferred at the user's request.
+Email OTP and domain restriction, Supabase shared data and admin roles, Gemini enrichment, and production map-provider capacity planning. No private workspace or login protection is claimed by this local sample-data prototype. Use synthetic information only. The source and documentation are prepared for GitHub. Vercel deployment is the next setup step; Supabase and login are not connected yet.
 
 ## Run on this computer
 
@@ -73,3 +73,9 @@ The Slidely wordmark in `public/brand/slidely-wordmark.png` and app icon from ht
 ## Location and map implementation
 
 Country/city lookup uses the latest stable `country-state-city` 3.2.1, with the large dataset kept server-side. The local `/api/locations` route returns countries or bounded city search results; no external location API sees form queries. Leaflet 1.9.4 loads only on Map. See [location/map decisions](docs/locations-and-map.md) for sources, versions, data limits and tile configuration.
+
+## Current UI
+
+![Map with fictional demo events](docs/screenshots/map-demo.jpg)
+
+Additional previews: [country/city form](docs/screenshots/location-form.jpg) and [multi-day calendar strips](docs/screenshots/month-preview.jpg). These are static screenshots; running event data is stored separately in each browser.
