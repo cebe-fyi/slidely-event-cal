@@ -8,16 +8,22 @@ A Next.js and TypeScript team event calendar. This first deployable milestone us
 - Chronological event list, day selection, search, category/tag filters.
 - Independent collapsible sidebars; desktop preferences saved on the device.
 - Responsive calendar/list navigation and a labeled, keyboard-accessible event dialog.
-- Add/edit/remove sample events for the current tab session. Reload resets the samples.
+- Add/edit events, with browser-local storage that survives reloads.
+- Create/edit/recolor/merge/delete categories and tags, with previews of affected events.
+- Recover deleted events from Trash. Associations stay consistent even when vocabulary changes while an event is trashed.
 - On-screen setup guide at `/setup`.
 
 ## What comes next
 
-Email OTP and domain restriction, Supabase shared data and admin roles, category/tag management, Gemini enrichment, and map view. No private workspace or login protection is claimed by this public sample-data prototype. Use synthetic information only.
+Email OTP and domain restriction, Supabase shared data and admin roles, Gemini enrichment, and map view. No private workspace or login protection is claimed by this local sample-data prototype. Use synthetic information only. GitHub upload and Vercel deployment are deferred at the user's request.
 
 ## Run on this computer
 
-Codex can run these steps for you. If using PowerShell yourself:
+For everyday use: double-click `Start calendar.cmd` in this project folder. When it says Ready, open http://127.0.0.1:3000. Keep the window open while using the calendar.
+
+Local data is stored under `slidely.events.workspace.v1` in browser localStorage, scoped to this exact origin and browser profile. It is not team storage or a backup. Switching between `localhost` and `127.0.0.1`, clearing site data, or using a different profile gives you a different local copy. Use the address above consistently.
+
+Codex can also run these steps for you. If using PowerShell yourself:
 
 1. Open this project folder in your terminal.
 2. Run `npm install` once to download dependencies.
@@ -44,7 +50,7 @@ First planned admin: `cebe@slidely.ai`, after verified login and explicit provis
 ## Verification
 
 - `npm run lint`: lint and React/Next checks.
-- `npm test`: date overlap, leap year, calendar boundary, and timezone tests.
+- `npm test`: dates/timezones, merge/reassignment, deduplication, trash/restore, and saved-data validation (10 tests).
 - `npm run build`: production compilation.
 - `npm run typecheck`: strict TypeScript checks (run after build on a clean checkout).
 
@@ -54,7 +60,7 @@ GitHub Actions runs these checks for pushes and pull requests.
 
 ## Source structure
 
-`src/app` holds routes and the global theme. `src/features/calendar` owns calendar interactions, `src/features/events` owns the form and sample data, and `src/lib/dates` centralizes date-only rules. Service integrations will be added in separate adapters rather than inside calendar components. See `plan.md` for the complete project plan.
+`src/app` holds routes and the global theme. `src/features/calendar` owns calendar interactions, `src/features/events` owns the form and sample data, `src/features/taxonomy` owns management dialogs, `src/features/workspace` owns validated local storage and atomic domain changes, and `src/lib/dates` centralizes date-only rules. Service integrations will be added in separate adapters rather than inside calendar components. See `plan.md` for the complete project plan.
 
 ## Brand asset
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CalendarDays, MapPin, X } from "lucide-react";
-import { CATEGORIES, TAGS, type TeamEvent } from "./types";
+import type { Category, Tag, TeamEvent } from "./types";
 import { isValidDate } from "@/lib/dates/calendar";
 
 type Props = {
@@ -11,9 +11,21 @@ type Props = {
   onClose: () => void;
   onSave: (event: TeamEvent) => void;
   onDelete: (id: string) => void;
+  categories: Category[];
+  tags: Tag[];
+  saveError: string;
 };
 
-export function EventDialog({ event, date, onClose, onSave, onDelete }: Props) {
+export function EventDialog({
+  event,
+  date,
+  onClose,
+  onSave,
+  onDelete,
+  categories,
+  tags,
+  saveError,
+}: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -66,7 +78,7 @@ export function EventDialog({ event, date, onClose, onSave, onDelete }: Props) {
       <form onSubmit={save}>
         <div className="dialog-header">
           <div>
-            <span className="small-muted">Sample workspace</span>
+            <span className="small-muted">Local preview</span>
             <h2 id="event-form-title">
               {event ? "Edit event" : "Add an event"}
             </h2>
@@ -81,8 +93,8 @@ export function EventDialog({ event, date, onClose, onSave, onDelete }: Props) {
           </button>
         </div>
         <p className="form-notice">
-          Preview changes stay in this tab until you reload. Use sample
-          information only.
+          Changes are saved in this browser only. Shared team data and sign-in
+          are not connected yet. Use sample information.
         </p>
         <label>
           Event name
@@ -139,7 +151,7 @@ export function EventDialog({ event, date, onClose, onSave, onDelete }: Props) {
           defaultValue={event?.categoryId ?? ""}
         >
           <option value="">Uncategorized</option>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
             </option>
@@ -148,7 +160,7 @@ export function EventDialog({ event, date, onClose, onSave, onDelete }: Props) {
         <fieldset>
           <legend>Tags</legend>
           <div className="form-tags">
-            {TAGS.map((tag) => (
+            {tags.map((tag) => (
               <label key={tag.id}>
                 <input
                   type="checkbox"
@@ -181,6 +193,11 @@ export function EventDialog({ event, date, onClose, onSave, onDelete }: Props) {
             rows={3}
           />
         </label>
+        {saveError && (
+          <p role="alert" className="form-error">
+            {saveError}
+          </p>
+        )}
         {error && (
           <p role="alert" className="form-error">
             {error}
@@ -196,14 +213,14 @@ export function EventDialog({ event, date, onClose, onSave, onDelete }: Props) {
                 else setConfirmDelete(true);
               }}
             >
-              {confirmDelete ? "Confirm removal" : "Remove sample"}
+              {confirmDelete ? "Confirm move to trash" : "Move to trash"}
             </button>
           )}
           <button type="button" className="secondary-button" onClick={onClose}>
             Cancel
           </button>
           <button className="primary-button" type="submit">
-            {event ? "Save changes" : "Add sample event"}
+            {event ? "Save changes" : "Add event"}
           </button>
         </div>
       </form>

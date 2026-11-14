@@ -1,7 +1,7 @@
 # Slidely team event calendar
 
 Last updated: 14 November 2026 (Asia/Kolkata)
-Status: Initial Next.js sample-data app implemented and locally verified; first GitHub push in progress. Supabase, authentication, Gemini, and map integrations remain pending.
+Status: Local-first development, per user instruction. Initial calendar plus browser-persistent event/category/tag management and recoverable trash implemented. GitHub upload and Vercel deployment are deferred; pending device sign-in was canceled. Supabase, authentication, Gemini, and map integrations remain pending.
 Owner: Jay / Slidely AI
 Repository: https://github.com/cebe-fyi/slidely-event-cal.git
 Confirmed first app admin: `cebe@slidely.ai` (provided as `Cebe@slidely.ai`; normalize email for matching). Admin provisioning is pending verified login and database setup.
@@ -338,7 +338,7 @@ Checkpoint: Development, Preview, and Production each point to their intended se
 
 ### Step 8: Connect Vercel to GitHub
 
-You: Vercel -> Add New Project -> Import Git Repository -> authorize only the needed GitHub repository -> select `cebe-fyi/slidely-event-cal`. Use the Next.js framework preset and repository root. Add the environment variables before deploying the connected version. Wait until app code has been pushed: this local project currently contains only the plan, so it is not deployable yet.
+Later, after local review and GitHub upload: Vercel -> Add New Project -> Import Git Repository -> authorize only the needed GitHub repository -> select `cebe-fyi/slidely-event-cal`. Use the Next.js framework preset and repository root. The current demo builds without environment variables; add service settings when those integrations are implemented. The app exists locally but has not been pushed yet.
 
 Use a plan suitable for company/commercial usage; Vercel describes Hobby as personal/non-commercial. Check current [plan eligibility and pricing](https://vercel.com/pricing) rather than assuming the company's app belongs on a free personal plan.
 
@@ -370,6 +370,7 @@ Checkpoint: production passes the launch checklist, and the team knows the URL a
 - [x] P1: Next.js scaffold and mock-data desktop/mobile prototype with month/year/list/panels, search, filters, and sample event editing. Official wordmark retrieved and black/white site treatment visually checked; exact font/accent approval remains pending. Desktop and 390px phone interaction checks passed.
 - [ ] P2: Development Supabase, migrations, domain-restricted OTP, session persistence, membership and RLS tests.
 - [ ] P3: Persistent event CRUD, search/filters, concurrency handling, categories/tags including atomic merge/delete, audit/trash.
+  - Local prototype subset: events/categories/tags persist in this browser, vocabulary create/edit/recolor/merge/delete is implemented, and trash/restore is available. Shared persistence, server authorization, audit history, and multi-user conflict handling are still pending; this does not complete P3.
 - [ ] P4: Gemini enrichment with evidence review, failure states, rate limits, and manual fallback.
 - [ ] P5: Map/geocoding integration, shared filters, clusters, and online/unlocated-event behavior.
 - [ ] P6: GitHub CI, Vercel previews/production, SMTP/domain verification, production migration and backup setup.
@@ -448,3 +449,7 @@ Supporting official documentation (checked during planning; recheck when impleme
 - 2026-11-14: Created Next.js 16.4.6 / React 19.3.1 / TypeScript app, README, safe environment template, formatter, CI, date utilities/tests, calendar/year/list UI, and deployment guide at `/setup`. Added Git remote `origin` for the provided empty repository. Prototype is clearly labeled sample-only; edits reset on reload and no private/authenticated access is claimed.
 - 2026-11-14: Browser checked desktop at 1440px and phone at 390px: year has twelve months, search narrows the list, invalid date range is rejected, sample save works, both panels reopen, mobile filters/list work, Escape dismisses the event dialog, no horizontal overflow or browser errors observed. Date unit tests pass (4). Final production verification recorded below when finished.
 - 2026-11-14: Final lint, 4 date tests, production build, and strict TypeScript checks pass. npm audit reports zero vulnerabilities after a narrow patched minimatch override for TypeScript ESLint tooling. Real environment files and local screenshot artifacts are ignored by Git. Vercel deployment verification remains pending; the sample app needs no credentials to build.
+- 2026-11-14: Initial app committed as `6a8bef9`. First push received GitHub 403: the computer's saved Git credential belongs to RishiSarangan, which cannot write to the provided repository. Started GitHub CLI device authorization for the correct account; no other account was signed out and global Git credentials were not replaced. Upload resumes after the user completes secure authorization.
+- 2026-11-14: User requested local development before GitHub upload. Stopped the pending GitHub device authorization. No code was uploaded and no deployment was created.
+- 2026-11-14: Added versioned browser-local workspace storage with validation, atomic category/tag changes including trashed-event associations, duplicate-name protection, merge/delete impact previews, recoverable event trash, and visible errors for failed storage. Added `Start calendar.cmd` for reopening without terminal commands. Exact local origin is `http://127.0.0.1:3000`; this browser-only storage is not shared or backed up.
+- 2026-11-14: Verified category create/rename/duplicate rejection, impact preview and merge reassignment, local event save across reload, tag create/delete, trash/restore, and mobile management layout at 390px. Native dialog keyboard handling remains intact and browser error logs are empty. Production build, strict TypeScript, lint, and all 10 tests pass. Saved local screenshot in ignored `artifacts/calendar-local.jpg`. No push or deployment performed.

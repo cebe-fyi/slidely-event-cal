@@ -49,9 +49,12 @@ export const TAGS: Tag[] = [
   { id: "sponsorship", name: "Sponsorship", color: "#ac6b24" },
 ];
 
-export function categoryFor(id: string): Category {
+export function categoryFor(
+  id: string,
+  options: Category[] = CATEGORIES,
+): Category {
   return (
-    CATEGORIES.find((category) => category.id === id) ?? {
+    options.find((category) => category.id === id) ?? {
       id: "",
       name: "Uncategorized",
       color: "#697586",

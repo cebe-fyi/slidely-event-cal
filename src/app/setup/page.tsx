@@ -4,17 +4,45 @@ export default function SetupPage() {
   return (
     <main className="setup-page">
       <Link href="/">← Back to calendar</Link>
-      <h1>Let’s get your calendar online.</h1>
+      <h1>Your local calendar is ready.</h1>
       <p>
         This first version runs with fictional sample events. It needs no API
         keys to deploy. Team login, shared storage, map view, and AI entry are
         the next milestones.
       </p>
       <p className="setup-status">
-        Use sample information only. Events added here reset when you reload.
-        Your admin account is planned for cebe@slidely.ai; sign-in is not
-        enabled yet.
+        You are working locally for now. Events, categories, tags, and trash are
+        saved in this browser and survive a refresh. They are not shared or
+        backed up to the team database. Use sample information only. Sign-in for
+        cebe@slidely.ai is not enabled yet.
       </p>
+      <section>
+        <h2>Use the local app</h2>
+        <ol>
+          <li>
+            Keep this address handy: <Link href="/">http://127.0.0.1:3000</Link>
+            .
+          </li>
+          <li>
+            To reopen it on another day, open the project folder in File
+            Explorer and double-click <strong>Start calendar.cmd</strong>.
+          </li>
+          <li>
+            When the window says <strong>Ready</strong>, open the address above.
+            Keep that window open while using the calendar.
+          </li>
+          <li>
+            Use the settings icon beside Categories or Tags to create, edit,
+            merge, and delete them. On a phone-sized screen, open Filters first.
+          </li>
+          <li>Use Trash in the sidebar to restore deleted events.</li>
+        </ol>
+        <p>
+          Browser storage is tied to this exact address and browser profile.
+          Clearing site data removes the local copy. GitHub and Vercel setup
+          below is for later; no upload or deployment is needed now.
+        </p>
+      </section>
       <section>
         <h2>1. Import your GitHub repository</h2>
         <ol>
@@ -46,7 +74,8 @@ export default function SetupPage() {
           confirm this repository is connected and the production branch is
           main, then open Deployments. A push to main should start its first
           deployment. If Vercel still reports no production deployment, use Add
-          New → Project to import the now-populated repository.
+          New → Project to import the repository after Codex has uploaded the
+          code.
         </p>
       </section>
       <section>

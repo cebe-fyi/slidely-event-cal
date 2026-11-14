@@ -25,7 +25,9 @@ import {
   PanelRightOpen,
   Plus,
   Search,
+  Settings2,
   Sparkles,
+  Trash2,
   X,
 } from "lucide-react";
 import {
@@ -39,17 +41,18 @@ import {
   prettyDate,
 } from "@/lib/dates/calendar";
 import {
-  CATEGORIES,
-  TAGS,
-  categoryFor,
+  categoryFor as findCategory,
+  type Category,
   type TeamEvent,
 } from "@/features/events/types";
-import { sampleEvents } from "@/features/events/sample-events";
 import { EventDialog } from "@/features/events/event-dialog";
+import { TaxonomyDialog } from "@/features/taxonomy/taxonomy-dialog";
+import { useLocalWorkspace } from "@/features/workspace/use-local-workspace";
+import { trashEvent } from "@/features/workspace/model";
 
 type View = "month" | "year";
-function colorStyle(id: string): CSSProperties {
-  const category = categoryFor(id);
+function colorStyle(id: string, options: Category[]): CSSProperties {
+  const category = findCategory(id, options);
   return {
     "--event-color": category.color,
     "--event-bg": category.background,
@@ -95,9 +98,17 @@ export function CalendarWorkspace({ today }: { today: string }) {
   const [year, setYear] = useState(todayYear);
   const [month, setMonth] = useState(todayMonth - 1);
   const [view, setView] = useState<View>("month");
-  const [events, setEvents] = useState(() =>
-    sampleEvents(todayYear, todayMonth - 1),
-  );
+  const {
+    workspace: data,
+    updateWorkspace,
+    storageError,
+  } = useLocalWorkspace(todayYear, todayMonth - 1);
+  const events = data.events;
+  const categoryFor = (id: string) => findCategory(id, data.categories);
+  const eventStyle = (id: string) => colorStyle(id, data.categories);
+  const [managing, setManaging] = useState<
+    "categories" | "tags" | "trash" | null
+  >(null);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
@@ -195,18 +206,24 @@ export function CalendarWorkspace({ today }: { today: string }) {
     setSelectedDay(null);
   }
   function saveEvent(event: TeamEvent) {
-    setEvents((current) =>
-      current.some((e) => e.id === event.id)
-        ? current.map((e) => (e.id === event.id ? event : e))
-        : [...current, event],
-    );
+    if (
+      !updateWorkspace((current) => ({
+        ...current,
+        events: current.events.some((e) => e.id === event.id)
+          ? current.events.map((e) => (e.id === event.id ? event : e))
+          : [...current.events, event],
+      }))
+    )
+      return;
     const [y, m] = event.startDate.split("-").map(Number);
     setYear(y);
     setMonth(m - 1);
     setView("month");
     clearFilters();
     setEditing(undefined);
-    setNotice("Sample event saved for this preview. Changes reset on reload.");
+    setNotice(
+      "Event saved in this browser. It will be here after you refresh.",
+    );
   }
 
   return (
@@ -232,7 +249,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
           Team workspace
         </div>
         <div className="header-actions">
-          <span className="preview-badge">Preview</span>
+          <span className="preview-badge">Local preview</span>
           <Link
             className="icon-button help-link"
             href="/setup"
@@ -248,13 +265,18 @@ export function CalendarWorkspace({ today }: { today: string }) {
       <div className="preview-strip">
         <Sparkles size={14} />
         <span>
-          <strong>A first look at your team calendar.</strong> Fictional sample
-          events · Changes reset on reload
+          <strong>Your local calendar preview.</strong> Saved in this browser ·
+          Not shared with the team
         </span>
         <Link href="/setup">
           Setup guide <ArrowUpRight size={13} />
         </Link>
       </div>
+      {storageError && editing === undefined && !managing && (
+        <p className="storage-error" role="alert">
+          {storageError}
+        </p>
+      )}
       <div
         className={`workspace ${leftClosed ? "left-collapsed" : ""} ${rightClosed ? "right-collapsed" : ""}`}
       >
@@ -355,6 +377,13 @@ export function CalendarWorkspace({ today }: { today: string }) {
           <div className="filter-section">
             <div className="section-label">
               <h2>Categories</h2>
+              <button
+                className="icon-button manage-button"
+                aria-label="Manage categories"
+                onClick={() => setManaging("categories")}
+              >
+                <Settings2 size={14} />
+              </button>
               {categories.length > 0 && (
                 <button
                   className="text-button"
@@ -364,7 +393,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 </button>
               )}
             </div>
-            {[...CATEGORIES, categoryFor("")].map((c) => (
+            {[...data.categories, categoryFor("")].map((c) => (
               <label className="filter-option" key={c.id}>
                 <input
                   type="checkbox"
@@ -377,7 +406,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 />
                 <span>{c.name}</span>
                 <span className="filter-count">
-                  {events.filter((e) => e.categoryId === c.id).length}
+                  {periodEvents.filter((e) => e.categoryId === c.id).length}
                 </span>
               </label>
             ))}
@@ -385,13 +414,20 @@ export function CalendarWorkspace({ today }: { today: string }) {
           <div className="filter-section">
             <div className="section-label">
               <h2>Tags</h2>
+              <button
+                className="icon-button manage-button"
+                aria-label="Manage tags"
+                onClick={() => setManaging("tags")}
+              >
+                <Settings2 size={14} />
+              </button>
               {tags.length > 0 && (
                 <button className="text-button" onClick={() => setTags([])}>
                   Reset
                 </button>
               )}
             </div>
-            {TAGS.map((tag) => (
+            {data.tags.map((tag) => (
               <label className="filter-option" key={tag.id}>
                 <input
                   type="checkbox"
@@ -405,6 +441,10 @@ export function CalendarWorkspace({ today }: { today: string }) {
               </label>
             ))}
           </div>
+          <button className="trash-link" onClick={() => setManaging("trash")}>
+            <Trash2 size={15} />
+            Trash <span>{data.trash.length}</span>
+          </button>
           <div className="sidebar-note">
             <span className="note-icon">
               <Sparkles size={17} />
@@ -611,7 +651,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                             <button
                               className="calendar-event"
                               key={event.id}
-                              style={colorStyle(event.categoryId)}
+                              style={eventStyle(event.categoryId)}
                               onClick={() => setEditing(event)}
                               title={`${event.title}, ${dateRange(event.startDate, event.endDate)}`}
                             >
@@ -766,7 +806,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                     )}
                     <button
                       className="event-card"
-                      style={colorStyle(event.categoryId)}
+                      style={eventStyle(event.categoryId)}
                       onClick={() => setEditing(event)}
                     >
                       <span className="event-category">
@@ -786,7 +826,13 @@ export function CalendarWorkspace({ today }: { today: string }) {
                         <span className="event-tags">
                           {event.tagIds.map((id) => (
                             <span key={id}>
-                              {TAGS.find((t) => t.id === id)?.name}
+                              <i
+                                style={{
+                                  background: data.tags.find((t) => t.id === id)
+                                    ?.color,
+                                }}
+                              />
+                              {data.tags.find((t) => t.id === id)?.name}
                             </span>
                           ))}
                         </span>
@@ -812,7 +858,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                   className="text-button"
                   onClick={() => setEditing(null)}
                 >
-                  Add a sample event <Plus size={14} />
+                  Add an event <Plus size={14} />
                 </button>
               </div>
             )}
@@ -837,6 +883,9 @@ export function CalendarWorkspace({ today }: { today: string }) {
       {editing !== undefined && (
         <EventDialog
           event={editing}
+          categories={data.categories}
+          tags={data.tags}
+          saveError={storageError}
           date={
             selectedDay ??
             (year === todayYear && month === todayMonth - 1
@@ -846,12 +895,28 @@ export function CalendarWorkspace({ today }: { today: string }) {
           onClose={() => setEditing(undefined)}
           onSave={saveEvent}
           onDelete={(id) => {
-            setEvents((es) => es.filter((e) => e.id !== id));
+            if (!updateWorkspace((current) => trashEvent(current, id))) return;
             setEditing(undefined);
             setNotice(
-              "Sample removed from this preview. Reloading restores the original examples.",
+              "Event moved to trash. Open Trash in the sidebar to restore it.",
             );
           }}
+        />
+      )}
+      {managing && (
+        <TaxonomyDialog
+          initialTab={managing}
+          data={data}
+          error={storageError}
+          onChange={(update) => {
+            const saved = updateWorkspace(update);
+            if (saved) {
+              setCategories([]);
+              setTags([]);
+            }
+            return saved;
+          }}
+          onClose={() => setManaging(null)}
         />
       )}
     </div>

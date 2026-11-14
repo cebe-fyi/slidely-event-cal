@@ -1473,3 +1473,194 @@ h1 {
     transition: none !important;
   }
 }
+
+/* Local workspace management; native dialogs supply focus trapping and Escape handling. */
+.manage-button {
+  margin-left: auto;
+}
+.section-label .text-button {
+  margin-left: 6px;
+}
+.trash-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 2px 20px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.trash-link > span {
+  margin-left: auto;
+}
+.event-tags > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.event-tags i {
+  width: 4px;
+  height: 4px;
+  display: inline-block;
+  border-radius: 50%;
+}
+.storage-error {
+  color: #a02a27;
+  background: #fff0ef;
+  padding: 12px 25px;
+  margin: 0;
+  line-height: 1.6;
+}
+.taxonomy-dialog {
+  max-width: 660px;
+}
+.manage-content {
+  padding: 25px;
+}
+.manage-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  margin: 20px 0 15px;
+}
+.manage-tabs button {
+  min-height: 44px;
+  padding: 10px 15px;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+}
+.manage-tabs button[aria-pressed="true"] {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.manage-description {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.manage-list {
+  margin-bottom: 15px;
+}
+.manage-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+.manage-row .icon-button {
+  min-width: 32px;
+}
+.manage-row strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.manage-row div > span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.manage-item-name {
+  flex: 1;
+  min-width: 0;
+}
+.manage-color {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.manage-empty {
+  padding: 30px 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.event-dialog .vocabulary-editor {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fcfcf8;
+}
+.vocabulary-editor h3,
+.vocabulary-confirm h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 17px;
+}
+.vocabulary-fields {
+  display: flex;
+  gap: 15px;
+}
+.vocabulary-fields > label:first-child {
+  flex: 1;
+}
+.vocabulary-fields > label:last-child {
+  width: 65px;
+}
+.vocabulary-fields input[type="color"] {
+  padding: 3px;
+  height: 40px;
+  cursor: pointer;
+}
+.vocabulary-confirm {
+  border: 1px solid #e6d2c3;
+  background: #fffaf5;
+  padding: 18px;
+  border-radius: 7px;
+}
+.vocabulary-confirm p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #8a715f;
+  margin-bottom: 17px;
+}
+.manage-success {
+  padding: 10px;
+  color: #237969;
+  background: #eaf6f1;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.manage-footer {
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+.trash-list .manage-row {
+  justify-content: space-between;
+}
+@media (max-width: 760px) {
+  .manage-content {
+    padding: 23px 18px;
+  }
+  .manage-row {
+    gap: 7px;
+  }
+  .manage-row .icon-button {
+    min-width: 36px;
+    min-height: 44px;
+  }
+  .manage-row strong {
+    font-size: 12px;
+  }
+  .manage-row div > span {
+    font-size: 10px;
+  }
+  .manage-tabs button {
+    flex: 1;
+    padding: 10px 6px;
+  }
+  .trash-link {
+    min-height: 44px;
+    padding: 10px 0;
+    font-size: 13px;
+  }
+}
