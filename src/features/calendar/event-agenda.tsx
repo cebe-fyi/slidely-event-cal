@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
+import { EventButton } from "../events/event-button";
 import { MapPin } from "lucide-react";
 import { icons } from "@/design/system";
 import { dateRange, prettyDate } from "@/lib/dates/calendar";
@@ -94,7 +95,10 @@ export function EventAgenda({
                 items.map((event) => {
                   const category = categoryFor(event.categoryId, categories);
                   return (
-                    <button
+                    <EventButton
+                      event={event}
+                      categories={categories}
+                      tags={tags}
                       key={event.id}
                       className="agenda-event"
                       style={
@@ -103,7 +107,7 @@ export function EventAgenda({
                           "--event-bg": category.background,
                         } as CSSProperties
                       }
-                      onClick={() => onOpen(event)}
+                      onOpen={onOpen}
                     >
                       <strong>{event.title}</strong>
                       <span className="agenda-event-meta">
@@ -129,7 +133,7 @@ export function EventAgenda({
                           })}
                         </span>
                       )}
-                    </button>
+                    </EventButton>
                   );
                 })
               ) : (

@@ -102,4 +102,9 @@
   --layout-menuItemHeight: 36px;
   --layout-eventDetailsWidth: 440px;
   --layout-agendaDateWidth: 112px;
+  --layout-hoverCardWidth: 320px;
+  --layout-hoverCardMaxHeight: 300px;
+  --layout-calendarEventHeight: 26px;
+  --layout-calendarDayHeader: 38px;
+  --layout-monthMobileMinWidth: 560px;
 }

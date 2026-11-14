@@ -71,7 +71,7 @@ export function EventDialog({
     <>
       <Modal
         title={event ? "Edit event" : "Add an event"}
-        description="Saved in this browser only. Shared team data and sign-in are not connected yet."
+        placement="right"
         onClose={onClose}
         closeLabel="Close event form"
         onSubmit={save}

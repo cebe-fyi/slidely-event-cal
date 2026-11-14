@@ -4,10 +4,10 @@ A Next.js and TypeScript team event calendar. This first deployable milestone us
 
 ## What works
 
-- Month and year calendars with category dots and inclusive multi-day events.
+- Month calendar with continuous multi-day strips, overlapping-event lanes and week-boundary continuation. Annual overview remains in the left sidebar.
 - Default List spans past and upcoming dates; Home/Today returns to today. Search and category/tag filters apply across all dates.
 - Permanent left sidebar and full-width main area. Details use a right-side overlay without resizing the layout, with Close, Edit, Escape and backdrop dismissal. All scrollbars stay thin.
-- Responsive calendar/list navigation and a labeled, keyboard-accessible event dialog.
+- Shared hover/focus previews in Month and List; event preview, Add and Edit use the same accessible right-side modal shell.
 - Add/edit events, with browser-local storage that survives reloads.
 - Create/edit/recolor/merge/delete categories and tags, with previews of affected events.
 - Compact, full-width sidebar sections with a 15% wider rail, colored checkbox filters, event counts, and row menus. Use the section + to create an item or its … menu to edit, merge, or delete it.

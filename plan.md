@@ -1,7 +1,7 @@
 # Slidely team event calendar
 
 Last updated: 14 November 2026 (Asia/Kolkata)
-Status: Local-first development with sample data. Main List view spans all dates and opens at today; Month and Year remain available. Event details open as a right-side overlay through the shared modal shell. Browser-persistent event/category/tag management, sidebar filters/counts/menus and common form/confirmation modals are implemented. Trash UI removed; internal event recovery data is retained. GitHub upload and Vercel deployment are deferred. Supabase, authentication, Gemini, and map integrations remain pending.
+Status: Local-first development with sample data. Main List view spans all dates and opens at today; Month remains available; Map is planned. Event details open as a right-side overlay through the shared modal shell. Browser-persistent event/category/tag management, sidebar filters/counts/menus and common form/confirmation modals are implemented. Trash UI removed; internal event recovery data is retained. GitHub upload and Vercel deployment are deferred. Supabase, authentication, Gemini, and map integrations remain pending.
 Owner: Jay / Slidely AI
 Repository: https://github.com/cebe-fyi/slidely-event-cal.git
 Confirmed first app admin: `cebe@slidely.ai` (provided as `Cebe@slidely.ai`; normalize email for matching). Admin provisioning is pending verified login and database setup.
@@ -41,21 +41,21 @@ These choices do not block a local mock-data prototype.
 ### 2.1 Layout and event details
 
 - Permanent full-height left sidebar with brand, year/month overview, category/tag filters and row menus. Keep equal insets excluding the scrollbar and full-width dividers.
-- Toolbar above the main area: Home, selected month/year, previous/next, Today, List / Month / Year / future Map, Add event. Search above main content.
+- Toolbar above the main area: Home, selected month/year, previous/next, Today, List / Month / future Map, Add event. Search above main content.
 - No persistent right column or collapse preference. Event details use a shared right-aligned modal overlay without resizing the main layout or moving the agenda. Close and Edit at top; event name, dates, location, category, tags, source website and notes below.
 - Escape, Close and backdrop dismiss details. Keyboard focus stays in the modal and returns to its source. Details fill the viewport on phones. Scrollbars stay thin. No event times.
 
 ### 2.2 Monthly calendar
 
-- Seven-column month grid, adjacent dates, Today marker, category accents, inclusive multi-day events and overflow counts.
-- Event click opens details. Date/overflow click opens List at that date with the full chronology available above and below.
+- Seven-column month grid, adjacent dates, Today marker, category accents and continuous inclusive multi-day strips. Split only at week boundaries, with continuation markers; reserve separate lanes for overlapping events. No dot inside event labels. Calendar rows grow for event lanes.
+- Event click opens details. Hover or keyboard focus reveals a shared preview card in Month and List; Escape, blur, scroll or resize dismisses it. Touch uses tap to open details. Date click opens List at that date with the full chronology available above and below.
 - Add event uses the selected date when available.
 
-### 2.3 Yearly view and left navigator
+### 2.3 Views and left navigator
 
-- Year shows twelve mini calendars; choosing a month drills into Month.
-- Left navigator shows year arrows and twelve months with category dots, no dropdown or View all shortcut.
-- In List, sidebar month/year navigation and toolbar month arrows jump to dated anchors without truncating the chronology. Calendar views navigate their displayed period.
+- Main navigation contains List, Month, and Map. Year view is removed; the left twelve-month overview retains annual navigation and category dots. Map remains disabled until the map integration is implemented.
+- Left navigator shows year arrows and twelve months, without a dropdown or View all shortcut.
+- In List, month/year navigation jumps to dated anchors without truncating events. In Month, it changes the displayed month.
 
 ### 2.4 List, search and filters
 
@@ -74,6 +74,7 @@ Optional: summary, organizer, official URL, registration URL, venue, city, regio
 
 - Unknown dates remain missing in the AI review; require correction before saving. Never invent a year.
 - In-person/hybrid events without a confirmed location can be saved but show Location to confirm and do not receive a guessed map pin.
+- Add and edit configure the same right-aligned modal shell as event preview. Keep a sticky header/footer, shared fields/actions, validation and autofocus.
 - Use ISO `YYYY-MM-DD` internally and human-readable dates in the interface. End date is inclusive and cannot precede start date.
 - Show created/last edited by and when. Those audit timestamps are technical metadata; they are not event times.
 - Warn about likely duplicates using official URL plus date/edition; allow a deliberate override because the same URL may host annual editions.
@@ -129,8 +130,8 @@ Flow: paste public event URL -> validate URL -> Gemini reads the source -> show 
 
 ### 2.10 Mobile and accessibility
 
-- Keep a narrower permanent left navigation/filter rail on phone-sized screens. The main area supports List, Month and Year; event details fill the phone viewport. The left sidebar has no collapsed/drawer state.
-- Small month cells show dots/counts; selecting a date reveals readable event cards. Year view reflows rather than shrinking illegibly.
+- Keep a narrower permanent left navigation/filter rail on phone-sized screens. The main area supports List and Month, with Map pending; event details fill the phone viewport. The left sidebar has no collapsed/drawer state.
+- Phone Month keeps a readable minimum width and scrolls horizontally inside its surface; selecting a date opens List. Event details and forms fill the phone viewport.
 - Keep Add event visible; use a full-screen form on small screens. Preserve unsaved input and show confirmation before discarding it.
 - Target comfortable touch controls (about 44 px), visible keyboard focus, labeled icon buttons/forms, logical tab order, accessible dialogs, and reduced-motion support.
 - Check at 360 px, tablet widths, desktop, keyboard-only navigation, and zoomed text. Announce asynchronous errors and confirmations accessibly.
@@ -281,7 +282,7 @@ Checkpoint: GitHub shows `plan.md`, app files, and a clean `.env.example`; no re
 
 ### Step 3: Build a local visual prototype
 
-Codex: create the branded layout and realistic synthetic events, including the mobile layout, filters, month/year/List views, and event-details overlays. Provide a local preview and simple launch instructions in README.
+Codex: create the branded layout and realistic synthetic events, including the mobile layout, filters, Month/List views and planned Map, and event-details overlays. Provide a local preview and simple launch instructions in README.
 
 You: review layout, brand accuracy, and the month navigator. Account setup can continue independently.
 
@@ -462,3 +463,7 @@ Supporting official documentation (checked during planning; recheck when impleme
 
 - 2026-11-14: Replaced persistent right list with shared right-side event-details modal (Close/Edit, fields, website and notes). List is the default main view, sorted/grouped by start date across all matching events. Home/Today returns to today; date/month/year navigation jumps to anchors without truncation. Month/Year remain available. Details become full-width on phones. Old collapse preferences are ignored. Design remains centralized. Local/sample-only work.
 - 2026-11-14: Verified desktop main bounds are identical before/after details (1166.3px wide at 1440px viewport), keyboard opening preserves agenda scroll, Home aligns Today to the scroll viewport, edit/cancel returns to details, Month event click opens details, empty-search feedback is visible, and 390px mobile has no page/dialog overflow. Production build, TypeScript, lint, central design checks and all 15 existing domain tests pass.
+
+- 2026-11-14: Removed Year view and its layout. Navigation is List/Month/Map (Map integration still pending). Month uses weekly date-range strips with noncolliding lanes, week-continuation edges and no event-label dots. Added shared event trigger/hover preview for Month and List, including keyboard focus/Escape and scroll/resize dismissal. Add/Edit now configure the same right-side Modal as preview. Mobile Month scrolls horizontally within its surface; event forms fill the viewport. Added four strip-layout tests for inclusive spans, overlap lanes, week/year boundaries and grid clipping; all 19 tests pass. Local sample data retained.
+
+- 2026-11-14: Browser verified one 470.7px strip across columns 2–4 for the 10–12 November conference, no event-label dots, focus previews in both views, Add/Edit at the same 440px right-side placement as details, successful unchanged-event save back to preview, and 390px mobile page/form without horizontal overflow. Sidebar month dots retained. Production build, TypeScript, lint, design checks and 19 tests pass. No push or deployment.

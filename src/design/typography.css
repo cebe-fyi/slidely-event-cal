@@ -73,8 +73,6 @@ legend {
 .calendar-footer,
 .event-tags,
 .event-tags > span,
-.mini-weekdays,
-.mini-grid,
 .small-muted,
 .form-notice,
 .empty-state p,
@@ -84,8 +82,7 @@ legend {
 }
 .day-number,
 .year-label,
-.period-navigation h2,
-.mini-grid {
+.period-navigation h2 {
   font-variant-numeric: tabular-nums;
 }
 .section-label h2 {
@@ -95,7 +92,6 @@ legend {
 /* Local section hierarchy: 16px, semibold. Event names remain at body size. */
 .year-label,
 .period-navigation h2,
-.year-month-name,
 .empty-state h3,
 .setup-page h2 {
   font-size: var(--text-section);
@@ -139,4 +135,12 @@ legend {
 .side-modal .dialog-header h2 {
   font-size: var(--text-body);
   letter-spacing: var(--tracking-normal);
+}
+
+.event-hover-card {
+  font-size: var(--text-caption);
+}
+.event-hover-card strong {
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
 }

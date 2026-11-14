@@ -2,7 +2,7 @@
 
 import { icons } from "@/design/system";
 
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -12,21 +12,9 @@ import {
   Search,
   X,
 } from "lucide-react";
-import {
-  MONTHS,
-  WEEKDAYS,
-  dateKey,
-  dateRange,
-  monthCells,
-  overlaps,
-  periodBounds,
-  prettyDate,
-} from "@/lib/dates/calendar";
-import {
-  categoryFor as findCategory,
-  type Category,
-  type TeamEvent,
-} from "@/features/events/types";
+import { MONTHS, dateKey, overlaps, periodBounds } from "@/lib/dates/calendar";
+import { type TeamEvent } from "@/features/events/types";
+import { MonthCalendar } from "./month-calendar";
 import { EventAgenda } from "./event-agenda";
 import { EventDetails } from "@/features/events/event-details";
 import { EventDialog } from "@/features/events/event-modal";
@@ -39,14 +27,7 @@ import { sidebarCounts } from "./filter-counts";
 import { useLocalWorkspace } from "@/features/workspace/use-local-workspace";
 import { trashEvent } from "@/features/workspace/model";
 
-type View = "month" | "year" | "list";
-function colorStyle(id: string, options: Category[]): CSSProperties {
-  const category = findCategory(id, options);
-  return {
-    "--event-color": category.color,
-    "--event-bg": category.background,
-  } as CSSProperties;
-}
+type View = "month" | "list";
 
 export function CalendarWorkspace({ today }: { today: string }) {
   const [todayYear, todayMonth] = today.split("-").map(Number);
@@ -60,8 +41,6 @@ export function CalendarWorkspace({ today }: { today: string }) {
     clearStorageError,
   } = useLocalWorkspace(todayYear, todayMonth - 1);
   const events = data.events;
-  const categoryFor = (id: string) => findCategory(id, data.categories);
-  const eventStyle = (id: string) => colorStyle(id, data.categories);
   const [managing, setManaging] = useState<VocabularyRequest | null>(null);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
@@ -88,15 +67,12 @@ export function CalendarWorkspace({ today }: { today: string }) {
         .includes(search.trim().toLowerCase()),
   );
   const [start, end] =
-    view === "list"
-      ? ["1900-01-01", "2200-12-31"]
-      : periodBounds(year, view === "month" ? month : undefined);
+    view === "list" ? ["1900-01-01", "2200-12-31"] : periodBounds(year, month);
   const periodEvents = filtered.filter((event) =>
     overlaps(event.startDate, event.endDate, start, end),
   );
   const counts = sidebarCounts(events, start, end, search, categories, tags);
-  const periodLabel =
-    view === "year" ? String(year) : `${MONTHS[month]} ${year}`;
+  const periodLabel = `${MONTHS[month]} ${year}`;
   const activeCount = categories.length + tags.length;
 
   function selectMonth(index: number) {
@@ -106,15 +82,11 @@ export function CalendarWorkspace({ today }: { today: string }) {
     setSelectedDay(null);
   }
   function move(amount: number) {
-    if (view === "year")
-      setYear((y) => Math.min(2200, Math.max(1900, y + amount)));
-    else {
-      const date = new Date(Date.UTC(year, month + amount, 1));
-      if (date.getUTCFullYear() >= 1900 && date.getUTCFullYear() <= 2200) {
-        setYear(date.getUTCFullYear());
-        setMonth(date.getUTCMonth());
-        jumpToDate(dateKey(date.getUTCFullYear(), date.getUTCMonth(), 1));
-      }
+    const date = new Date(Date.UTC(year, month + amount, 1));
+    if (date.getUTCFullYear() >= 1900 && date.getUTCFullYear() <= 2200) {
+      setYear(date.getUTCFullYear());
+      setMonth(date.getUTCMonth());
+      jumpToDate(dateKey(date.getUTCFullYear(), date.getUTCMonth(), 1));
     }
     setSelectedDay(null);
   }
@@ -225,16 +197,14 @@ export function CalendarWorkspace({ today }: { today: string }) {
             <div className="period-arrows">
               <button
                 className="icon-button"
-                aria-label={
-                  view !== "year" ? "Previous month" : "Previous period year"
-                }
+                aria-label="Previous month"
                 onClick={() => move(-1)}
               >
                 <ChevronLeft size={icons.control} />
               </button>
               <button
                 className="icon-button"
-                aria-label={view !== "year" ? "Next month" : "Next period year"}
+                aria-label="Next month"
                 onClick={() => move(1)}
               >
                 <ChevronRight size={icons.control} />
@@ -273,16 +243,6 @@ export function CalendarWorkspace({ today }: { today: string }) {
               }}
             >
               Month
-            </button>
-            <button
-              aria-pressed={view === "year"}
-              className={view === "year" ? "active" : ""}
-              onClick={() => {
-                setView("year");
-                setSelectedDay(null);
-              }}
-            >
-              Year
             </button>
             <button disabled title="Available after map setup">
               <MapPin size={icons.inline} />
@@ -337,147 +297,17 @@ export function CalendarWorkspace({ today }: { today: string }) {
             />
           ) : (
             <div className="calendar-surface">
-              {view === "month" ? (
-                <div className="month-calendar">
-                  <div className="weekdays">
-                    {WEEKDAYS.map((day) => (
-                      <span key={day}>{day}</span>
-                    ))}
-                  </div>
-                  <div
-                    className="month-grid"
-                    style={
-                      {
-                        "--week-count": monthCells(year, month).length / 7,
-                      } as CSSProperties
-                    }
-                  >
-                    {monthCells(year, month).map((cell) => {
-                      const dayEvents = filtered.filter((event) =>
-                        overlaps(
-                          event.startDate,
-                          event.endDate,
-                          cell.key,
-                          cell.key,
-                        ),
-                      );
-                      return (
-                        <div
-                          key={cell.key}
-                          className={`day-cell ${!cell.inMonth ? "outside-month" : ""} ${cell.key === selectedDay ? "selected-day" : ""}`}
-                        >
-                          <button
-                            className={`day-number ${cell.key === today ? "is-today" : ""}`}
-                            aria-label={`${prettyDate(cell.key, true)}, ${dayEvents.length} events`}
-                            aria-pressed={selectedDay === cell.key}
-                            onClick={() => selectDay(cell.key)}
-                          >
-                            {cell.day}
-                          </button>
-                          <div className="day-event-labels">
-                            {dayEvents.slice(0, 2).map((event) => (
-                              <button
-                                className="calendar-event"
-                                key={event.id}
-                                style={eventStyle(event.categoryId)}
-                                onClick={() => setDetailsId(event.id)}
-                                title={`${event.title}, ${dateRange(event.startDate, event.endDate)}`}
-                              >
-                                <span className="event-dot" />
-                                <span>{event.title}</span>
-                              </button>
-                            ))}
-                            {dayEvents.length > 2 && (
-                              <button
-                                className="overflow-events"
-                                onClick={() => selectDay(cell.key)}
-                              >
-                                +{dayEvents.length - 2} more
-                              </button>
-                            )}
-                          </div>
-                          <span className="mobile-day-dots" aria-hidden="true">
-                            {dayEvents.slice(0, 4).map((event) => (
-                              <i
-                                key={event.id}
-                                style={{
-                                  background: categoryFor(event.categoryId)
-                                    .color,
-                                }}
-                              />
-                            ))}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : (
-                <div className="year-grid">
-                  {MONTHS.map((name, index) => (
-                    <button
-                      className="year-month"
-                      key={name}
-                      onClick={() => selectMonth(index)}
-                      aria-label={`Open ${name} ${year}`}
-                    >
-                      <span
-                        className={`year-month-name ${index === todayMonth - 1 && year === todayYear ? "current" : ""}`}
-                      >
-                        {name}
-                        <ChevronRight size={icons.control} />
-                      </span>
-                      <span className="mini-weekdays">
-                        {WEEKDAYS.map((d) => (
-                          <span key={d}>{d.slice(0, 1)}</span>
-                        ))}
-                      </span>
-                      <span className="mini-grid">
-                        {monthCells(year, index).map((cell) => (
-                          <span
-                            className={
-                              !cell.inMonth
-                                ? "muted-day"
-                                : cell.key === today
-                                  ? "mini-today"
-                                  : ""
-                            }
-                            key={cell.key}
-                          >
-                            <span>{cell.day}</span>
-                            <span className="mini-dots">
-                              {cell.inMonth &&
-                                [
-                                  ...new Set(
-                                    filtered
-                                      .filter((e) =>
-                                        overlaps(
-                                          e.startDate,
-                                          e.endDate,
-                                          cell.key,
-                                          cell.key,
-                                        ),
-                                      )
-                                      .map((e) => e.categoryId),
-                                  ),
-                                ]
-                                  .slice(0, 3)
-                                  .map((id) => (
-                                    <i
-                                      key={id}
-                                      style={{
-                                        background: categoryFor(id).color,
-                                      }}
-                                    />
-                                  ))}
-                            </span>
-                          </span>
-                        ))}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
+              <MonthCalendar
+                year={year}
+                month={month}
+                today={today}
+                selectedDay={selectedDay}
+                events={filtered}
+                categories={data.categories}
+                tags={data.tags}
+                onDaySelect={selectDay}
+                onOpen={(event) => setDetailsId(event.id)}
+              />
               <div className="calendar-footer">
                 <span>
                   <i className="today-legend" />

@@ -62,3 +62,9 @@ Run `npm run design:check` after changing the design. It verifies the generated 
 When adding a component, reuse an existing recipe and typography role. Add a new token only when an existing one cannot express a meaningful product distinction. Explain that distinction here; do not silently expand the type scale or brand palette.
 
 Visual direction is inspired by Notion's restrained hierarchy and shadcn's shared component conventions; this does not claim either product's exact design. The implementation follows [shadcn's semantic CSS-variable approach](https://ui.shadcn.com/docs/theming). Inter is distributed with its original font license in `public/brand/Inter-LICENSE.txt`.
+
+## Event strips, previews and forms
+
+Month uses a weekly seven-column grid with a separate strip layer. Grid spans and lane numbers are runtime geometry; event height, header space, mobile minimum width and hover-card width/height are central layout tokens. Multi-day strips join dates within a week, with explicit continuation edges across rows. Labels have no dot. Overlap lanes grow the week rather than hiding records.
+
+EventButton owns a shared hover/focus preview for agenda and Month. Hover waits briefly, focus opens it directly, Escape dismisses, and scroll/resize closes stale positions. Previews use 12px supporting text and 14px semibold titles. Touch opens details by tapping. Add/Edit configure Modal with right placement, using the same width, header, focus and dismissal behavior as event preview; form actions stay visible in a sticky footer.
