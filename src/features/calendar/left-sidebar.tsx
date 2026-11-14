@@ -25,7 +25,7 @@ import type { VocabularyRequest } from "../taxonomy/vocabulary-modal";
 type Props = {
   year: number;
   month: number;
-  view: "month" | "year";
+  view: "month" | "year" | "list";
   categories: Category[];
   tags: Tag[];
   filteredEvents: TeamEvent[];

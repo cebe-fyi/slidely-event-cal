@@ -1,7 +1,7 @@
 # Slidely team event calendar
 
 Last updated: 14 November 2026 (Asia/Kolkata)
-Status: Local-first development with sample data. Calendar and browser-persistent event/category/tag management implemented. Sidebar refined with + create controls, colored checkbox filters, counts, row menus, and common form/confirmation modals. Trash UI removed per user request; internal event recovery data is retained. GitHub upload and Vercel deployment are deferred. Supabase, authentication, Gemini, and map integrations remain pending.
+Status: Local-first development with sample data. Main List view spans all dates and opens at today; Month and Year remain available. Event details open as a right-side overlay through the shared modal shell. Browser-persistent event/category/tag management, sidebar filters/counts/menus and common form/confirmation modals are implemented. Trash UI removed; internal event recovery data is retained. GitHub upload and Vercel deployment are deferred. Supabase, authentication, Gemini, and map integrations remain pending.
 Owner: Jay / Slidely AI
 Repository: https://github.com/cebe-fyi/slidely-event-cal.git
 Confirmed first app admin: `cebe@slidely.ai` (provided as `Cebe@slidely.ai`; normalize email for matching). Admin provisioning is pending verified login and database setup.
@@ -20,9 +20,9 @@ The four attached screenshots are visual references, not instructions. Borrow th
 - Anyone with a verified, active `@slidely.ai` account can join and edit events. Admins manage team access and category/tag settings. This role split is a proposal and can be changed.
 - One primary industry/segment category per event; zero or more tags. This gives every event one unambiguous calendar and map color.
 - All event dates are date-only. Multi-day events are supported. There are no event times or time slots.
-- Monday starts the week. Open on the current month; remember the user's last chosen view and panel preferences on that device.
+- Monday starts the week. Open List at today; no right-panel collapse preference.
 - The small left navigator shows a year and twelve month buttons, with category-colored event dots under each month. It does not repeat a daily calendar.
-- Month, year, map, and event list share the same selected period and filters.
+- All views share category/tag/search filters. List spans all dates; calendar and map use a selected period.
 - Manual entry is always available. AI creates a reviewable suggestion, never an automatically published event.
 
 ### Decisions to confirm before their implementation
@@ -38,41 +38,33 @@ These choices do not block a local mock-data prototype.
 
 ## 2. Features and interaction details
 
-### 2.1 Desktop layout
+### 2.1 Layout and event details
 
-- Full-height left sidebar: Slidely identity and workspace-information icon at the top, followed by year navigation, twelve month buttons, category legend/filters, tag filters, and management entry points. It stays visible and has no collapse control.
-- Compact calendar toolbar above the center and right panel: Home/current month, selected month/year, previous/next, Today, Month / Year / Map switch, and Add event. Remove the previous global navbar, local-preview banner, and introductory heading. Search stays above the calendar grid.
-- Center: selected calendar or map view, with loading, empty, and error states.
-- Right panel: events for the selected period, in ascending date order, grouped under readable date headings. Show title, date range, location/Online, category, and useful tags. Do not show times.
-- Only the right panel collapses. Retain an accessible button to reopen it and save that preference locally. The center expands into the freed space; the left sidebar remains full-height and visible regardless of any old saved left-collapse preference.
-- Use consistently thin scrollbars for the left sidebar, calendar content, right event list, and dialogs.
-- Sidebar widths are 15% wider than their previous desktop/tablet/phone bases, via central layout tokens. Dividers span the full sidebar width, with compact spacing. The sidebar contains no Trash link, notes, footer promo, or AI marketing card.
-- Clicking an event opens a details sheet with source link, description, edit, and delete actions.
+- Permanent full-height left sidebar with brand, year/month overview, category/tag filters and row menus. Keep equal insets excluding the scrollbar and full-width dividers.
+- Toolbar above the main area: Home, selected month/year, previous/next, Today, List / Month / Year / future Map, Add event. Search above main content.
+- No persistent right column or collapse preference. Event details use a shared right-aligned modal overlay without resizing the main layout or moving the agenda. Close and Edit at top; event name, dates, location, category, tags, source website and notes below.
+- Escape, Close and backdrop dismiss details. Keyboard focus stays in the modal and returns to its source. Details fill the viewport on phones. Scrollbars stay thin. No event times.
 
 ### 2.2 Monthly calendar
 
-- Seven-column month grid with subtle adjacent-month dates and a clear Today marker.
-- Event labels use category color accents and readable text; crowded cells show a limited number plus a clickable overflow count.
-- Multi-day events remain visible on every covered date; the list contains one entry per event.
-- Selecting a month updates both the center and right list. Selecting a day narrows the list to overlapping events for that day; a clear action returns to the whole month.
-- Dates in an adjacent month navigate to that month. Add-event entry from a date prefills that date.
+- Seven-column month grid, adjacent dates, Today marker, category accents, inclusive multi-day events and overflow counts.
+- Event click opens details. Date/overflow click opens List at that date with the full chronology available above and below.
+- Add event uses the selected date when available.
 
 ### 2.3 Yearly view and left navigator
 
-- Center yearly view: twelve compact month calendars with category dots/counts and keyboard-accessible month selection.
-- Choosing a year shows that year's event list. Choosing a month drills into the monthly view and its list.
-- Left navigator remains the simpler twelve-month selector. Dots summarize categories represented in each month's overlapping events; cap visible dots and show an overflow count.
-- The sidebar year is plain text between previous/next arrows; it has no dropdown or View all year shortcut. Use Year in the main toolbar for the yearly view and its event list.
+- Year shows twelve mini calendars; choosing a month drills into Month.
+- Left navigator shows year arrows and twelve months with category dots, no dropdown or View all shortcut.
+- In List, sidebar month/year navigation and toolbar month arrows jump to dated anchors without truncating the chronology. Calendar views navigate their displayed period.
 
-### 2.4 Event list, search, and filters
+### 2.4 List, search and filters
 
-- Date range is based on overlap, not only start date. A conference starting in December and ending in January appears in both relevant periods.
-- Active events that started earlier appear first, with their original date range. Stable tie-break: start date, title, then ID.
-- Search title, organizer, and location. Debounce input; retain search/filter state in the URL so back/forward and shared internal links work.
-- Multiple selected categories mean any selected category; multiple selected tags mean any selected tag. Combine category, tag, period, and search groups with AND.
-- No category/tag selected means all. Include Uncategorized as an explicit category filter.
-- Calendar, map, month dots, counts, and list apply the same predicate. A selected date further narrows the selected period.
-- Show active filter chips, Clear filters, count, and a useful no-results message.
+- List is the default main view, containing all matching events across months/years. Group by start date and sort by start date, title, then ID. Show each event once with its full inclusive date range.
+- Open at a Today marker. Scroll up for old events and down for upcoming events. Home/Today returns to today's anchor, including days without events.
+- Local search covers title, location and description. Shared-version plans include organizer, debouncing and URL state.
+- Multiple categories match any selected category; multiple tags match any selected tag. Combine groups and search with AND. Empty selections mean all; Uncategorized is explicit.
+- Calendar period membership uses overlap. List uses all dates; date selection is a scroll anchor rather than a filter. Facet counts use all dates in List and the calendar's selected period otherwise, ignoring their own selection group.
+- Opening details preserves agenda position. Changing matching records/filter results re-anchors the list; no-results feedback stays visible at that anchor.
 
 ### 2.5 Event record and editing
 
@@ -92,7 +84,7 @@ Optional: summary, organizer, official URL, registration URL, venue, city, regio
 
 - Both support name, accessible color, create, rename, recolor, merge, and delete.
 - Each section has a + create control. A single category/tag-colored checkbox combines filtering and the color marker. Counts appear on the right; hover or keyboard focus shows … with Edit, Merge, Delete. Touch devices keep the menu trigger visible. Uncategorized remains a protected system fallback.
-- Counts use the selected month/year and search, plus filters from the opposite group; they ignore their own group's selection so other choices keep informative counts. Multi-day events are counted once.
+- Counts use all dates in List or selected month/year otherwise, plus search, plus filters from the opposite group; they ignore their own group's selection so other choices keep informative counts. Multi-day events are counted once.
 - All create/edit dialogs configure the same shared form template with Name and Slidely Color. Merge configures the common confirmation template with a required destination. Delete uses that same confirmation template, explains impact, and preserves events. Shared modal/field/action components also serve event editing; no duplicate modal shells in feature code.
 - Category examples: SaaS, Healthcare, Education. Tag examples: Speaking opportunity, Sponsor prospect, India. These are illustrative, not approved seed data.
 - Prevent blank names and case-insensitive duplicates after trimming.
@@ -104,7 +96,7 @@ Optional: summary, organizer, official URL, registration URL, venue, city, regio
 ### 2.7 Map view
 
 - Reuse month/year controls and category/tag/search filters. Cluster nearby markers, and use category colors.
-- Clicking a marker opens the event summary and highlights its right-list entry. Clicking a cluster zooms in; overlapping venue events remain individually selectable.
+- Clicking a marker opens the shared event-details overlay. Clicking a cluster zooms in; overlapping venue events remain individually selectable.
 - Display online and unlocated events in a separate list section/count; they remain discoverable even though they have no pin.
 - Start with pins for confirmed coordinates and a Fit events action. Panning does not silently change date/filter results; geographic filtering can be added later if needed.
 - Proposed provider: Mapbox for rendering and geocoding. Confirm billing and stored-geocoding permissions before integrating; use permanent geocoding when storing its results. Manual coordinate correction remains possible.
@@ -137,7 +129,7 @@ Flow: paste public event URL -> validate URL -> Gemini reads the source -> show 
 
 ### 2.10 Mobile and accessibility
 
-- Keep a narrower permanent left navigation/filter rail on phone-sized screens. The remaining space switches between Calendar and Event list, so the full desktop right column is not squeezed into the phone layout. The left sidebar has no collapsed/drawer state.
+- Keep a narrower permanent left navigation/filter rail on phone-sized screens. The main area supports List, Month and Year; event details fill the phone viewport. The left sidebar has no collapsed/drawer state.
 - Small month cells show dots/counts; selecting a date reveals readable event cards. Year view reflows rather than shrinking illegibly.
 - Keep Add event visible; use a full-screen form on small screens. Preserve unsaved input and show confirmation before discarding it.
 - Target comfortable touch controls (about 44 px), visible keyboard focus, labeled icon buttons/forms, logical tab order, accessible dialogs, and reduced-motion support.
@@ -231,7 +223,7 @@ src/app/(workspace)/calendar/         Protected calendar route
 src/app/(workspace)/settings/         Categories, tags, team access
 src/app/api/                         Thin auth, enrichment, geocode handlers
 src/components/ui/                   Shared accessible primitives
-src/components/layout/               Header and collapsible panels
+src/components/layout/               Header and permanent navigation
 src/features/calendar/               Month/year views and selection state
 src/features/events/                 Form, details, list, schemas, service
 src/features/taxonomy/               Categories/tags and merge dialogs
@@ -258,7 +250,7 @@ Keep route handlers thin and feature rules close to their feature. Comment why a
 
 ### 4.5 State, performance, and debugging
 
-- URL owns selected period, view, search, and filter IDs. Local preference storage owns collapsed panels. Supabase owns saved data. Form state owns unsaved edits.
+- URL owns selected period, view, search, and filter IDs. Details visibility and agenda anchors are transient UI state. Supabase owns saved data. Form state owns unsaved edits.
 - Authenticate every mutation/handler, even when the page itself is protected. Validate input and provider output server-side.
 - Do not put private user data in a global cache. Use request-scoped deduplication where useful; invalidate/revalidate affected data after mutations.
 - Fetch independent initial datasets concurrently, defer the map bundle, and paginate long lists. Start simple; measure before adding another cache/state library.
@@ -289,7 +281,7 @@ Checkpoint: GitHub shows `plan.md`, app files, and a clean `.env.example`; no re
 
 ### Step 3: Build a local visual prototype
 
-Codex: create the branded layout and realistic synthetic events, including the mobile layout, filters, month/year views, and collapsible panels. Provide a local preview and simple launch instructions in README.
+Codex: create the branded layout and realistic synthetic events, including the mobile layout, filters, month/year/List views, and event-details overlays. Provide a local preview and simple launch instructions in README.
 
 You: review layout, brand accuracy, and the month navigator. Account setup can continue independently.
 
@@ -399,7 +391,7 @@ Complete one working slice at a time. A later milestone is not permission to omi
 ### Human acceptance
 
 - [ ] Slidely branding visually verified; screenshot times/unrelated widgets excluded.
-- [ ] Left sidebar stays full-height and visible; only the right panel collapses/reopens; left month/year navigation drives the correct right list.
+- [ ] Left sidebar stays visible; details overlay without resizing main content; List spans all dates and Home returns to today.
 - [ ] Month/year/map display the same matching events and category colors.
 - [ ] Multi-day and cross-year events behave correctly; online/unlocated events stay discoverable.
 - [ ] Categories and tags support all requested management operations with an impact preview.
@@ -467,3 +459,6 @@ Supporting official documentation (checked during planning; recheck when impleme
 - 2026-11-14: Added a full-width divider below the Slidely brand/icon row and placed that row in the same grid track as the main toolbar. Desktop browser measurement confirms both dividers at y=64px. Logo and icon are vertically centered. Header height and sidebar insets now use shared layout tokens; month-grid outer edges exactly match filter-section content edges (20px desktop inset). Increased horizontal month spacing to the existing 32px spacing token and row gaps to 8px; narrow screens use the compact spacing scale. Local/sample-only refinement.
 - 2026-11-14: Follow-up spacing refinement supersedes the large month gaps above: month buttons now fill the grid with a 4px gap and centralized 52px cell height, enlarging both hover and active surfaces. Right padding now includes the measured native scrollbar and sidebar border, while left insets are preserved. Counts and trailing +/…/profile icons align to the right content edge. ResizeObserver updates the scrollbar compensation as viewport/content changes. Browser measurement with a visible scrollbar found 20px left versus approximately 19.3px right (subpixel rounding), and month tiles about 75.4px wide × 52px high. Local/sample-only changes.
 - 2026-11-14: User reversed the scrollbar-included spacing decision above. Sidebar content now has equal padding excluding the scrollbar (20px desktop, 8px phone); the brand row reserves the scrollbar lane separately for alignment. Row highlights provide equal breathing room around checkbox and action controls, with the ellipsis contained 4px inside the row edge. Browser verified matching overview/category/tag insets with a visible desktop scrollbar, mobile menu operation, and no horizontal page overflow at 390px. Local sample data retained; no push or deployment.
+
+- 2026-11-14: Replaced persistent right list with shared right-side event-details modal (Close/Edit, fields, website and notes). List is the default main view, sorted/grouped by start date across all matching events. Home/Today returns to today; date/month/year navigation jumps to anchors without truncation. Month/Year remain available. Details become full-width on phones. Old collapse preferences are ignored. Design remains centralized. Local/sample-only work.
+- 2026-11-14: Verified desktop main bounds are identical before/after details (1166.3px wide at 1440px viewport), keyboard opening preserves agenda scroll, Home aligns Today to the scroll viewport, edit/cancel returns to details, Month event click opens details, empty-search feedback is visible, and 390px mobile has no page/dialog overflow. Production build, TypeScript, lint, central design checks and all 15 existing domain tests pass.

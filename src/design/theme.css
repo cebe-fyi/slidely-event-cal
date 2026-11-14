@@ -100,4 +100,6 @@
   --layout-menuWidth: 176px;
   --layout-menuGap: 4px;
   --layout-menuItemHeight: 36px;
+  --layout-eventDetailsWidth: 440px;
+  --layout-agendaDateWidth: 112px;
 }

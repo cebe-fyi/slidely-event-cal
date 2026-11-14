@@ -53,7 +53,7 @@ Sidebar row actions use the common `DropdownMenu`. It handles outside click, key
 - Buttons, inputs, cards, and dialogs share the same neutral borders, focus accent, spacing, and typography roles. Do not create a one-off visual variant for each feature.
 - Icon sizes are limited to 12px inline, 16px control, 20px navigation, and 24px illustration. Import `icons` from `design/system.ts` instead of passing an invented numeric size.
 - Thin scrollbars, visible focus, native dialog keyboard support, and reduced-motion behavior apply throughout.
-- Layout geometry and breakpoints stay together in `components.css`. This preserves the permanent full-height left rail and the independently collapsible right event panel.
+- Layout geometry and breakpoints stay together in `components.css`. This preserves the permanent left rail and full-width main area. Details configure shared Modal with right placement: 440px desktop, full-width phone, without changing the grid. Details width and agenda date column use layout tokens. Agenda titles use 14px semibold, date groups 14px medium, metadata 12px regular, and detail title 20px semibold.
 
 ## Verification and future changes
 

@@ -15,7 +15,9 @@ type ModalProps = {
   description?: ReactNode;
   error?: string;
   children?: ReactNode;
-  actions: ReactNode;
+  actions?: ReactNode;
+  placement?: "center" | "right";
+  headerActions?: ReactNode;
   onClose: () => void;
   onSubmit?: FormEventHandler<HTMLFormElement>;
   closeLabel?: string;
@@ -28,6 +30,8 @@ export function Modal({
   error,
   children,
   actions,
+  placement = "center",
+  headerActions,
   onClose,
   onSubmit,
   closeLabel = "Close dialog",
@@ -39,24 +43,37 @@ export function Modal({
     ref.current?.showModal();
     ref.current
       ?.querySelector<HTMLElement>("[autofocus], [data-autofocus]")
-      ?.focus();
+      ?.focus({ preventScroll: true });
     return () => {
       if (previous instanceof HTMLElement && previous.isConnected)
-        previous.focus();
+        previous.focus({ preventScroll: true });
     };
   }, []);
   const contents = (
     <>
       <div className="dialog-header">
+        {placement === "right" && (
+          <button
+            type="button"
+            className="icon-button"
+            onClick={onClose}
+            aria-label={closeLabel}
+          >
+            <X size={icons.navigation} />
+          </button>
+        )}
         <h2 id={`${id}-title`}>{title}</h2>
-        <button
-          type="button"
-          className="icon-button"
-          onClick={onClose}
-          aria-label={closeLabel}
-        >
-          <X size={icons.navigation} />
-        </button>
+        {headerActions}
+        {placement === "center" && (
+          <button
+            type="button"
+            className="icon-button"
+            onClick={onClose}
+            aria-label={closeLabel}
+          >
+            <X size={icons.navigation} />
+          </button>
+        )}
       </div>
       {description && (
         <p className="modal-description" id={`${id}-description`}>
@@ -69,15 +86,26 @@ export function Modal({
           {error}
         </p>
       )}
-      <div className="dialog-actions">{actions}</div>
+      {actions && <div className="dialog-actions">{actions}</div>}
     </>
   );
   return (
     <dialog
       ref={ref}
-      className="event-dialog shared-modal"
+      className={`event-dialog shared-modal ${placement === "right" ? "side-modal" : ""}`}
       aria-labelledby={`${id}-title`}
       aria-describedby={description ? `${id}-description` : undefined}
+      onClick={(event) => {
+        if (event.target !== event.currentTarget) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (
+          event.clientX < bounds.left ||
+          event.clientX > bounds.right ||
+          event.clientY < bounds.top ||
+          event.clientY > bounds.bottom
+        )
+          onClose();
+      }}
       onCancel={(event) => {
         event.preventDefault();
         onClose();

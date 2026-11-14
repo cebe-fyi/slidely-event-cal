@@ -41,7 +41,6 @@ legend {
 .today-button,
 .view-control button,
 .search-field input,
-.event-card strong,
 .event-dialog label,
 .event-dialog legend,
 .form-tags label,
@@ -57,10 +56,8 @@ legend {
 .view-control button,
 .month-picker > button,
 .section-label h2,
-.event-card strong,
 .event-dialog label,
-.event-dialog legend,
-.mobile-view-switch button {
+.event-dialog legend {
   font-weight: var(--weight-medium);
 }
 
@@ -74,31 +71,21 @@ legend {
 .calendar-event,
 .overflow-events,
 .calendar-footer,
-.list-subheading,
-.count-pill,
-.back-to-period,
-.list-date-heading,
-.list-date-heading > span,
-.event-category,
-.event-meta,
 .event-tags,
 .event-tags > span,
-.list-footer,
 .mini-weekdays,
 .mini-grid,
 .small-muted,
 .form-notice,
 .empty-state p,
 .setup-page > a,
-.setup-page code,
-.mobile-view-switch button {
+.setup-page code {
   font-size: var(--text-caption);
 }
 .day-number,
 .year-label,
 .period-navigation h2,
-.mini-grid,
-.count-pill {
+.mini-grid {
   font-variant-numeric: tabular-nums;
 }
 .section-label h2 {
@@ -106,7 +93,6 @@ legend {
 }
 
 /* Local section hierarchy: 16px, semibold. Event names remain at body size. */
-.panel-title,
 .year-label,
 .period-navigation h2,
 .year-month-name,
@@ -128,4 +114,29 @@ legend {
 .month-picker > .selected,
 .day-number.is-today {
   font-weight: var(--weight-semibold);
+}
+
+/* Agenda: date groups are section labels; titles use the existing body role. */
+.agenda-date,
+.agenda-event strong,
+.event-detail-fields dt {
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+}
+.agenda-date time,
+.agenda-event-meta,
+.agenda-boundary,
+.agenda-empty,
+.detail-tags,
+.detail-category {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-regular);
+}
+.event-detail-title {
+  font-size: var(--text-heading);
+  line-height: var(--leading-heading);
+}
+.side-modal .dialog-header h2 {
+  font-size: var(--text-body);
+  letter-spacing: var(--tracking-normal);
 }
