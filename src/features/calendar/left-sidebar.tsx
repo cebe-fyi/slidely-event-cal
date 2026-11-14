@@ -9,7 +9,7 @@ import {
   Plus,
   UserRound,
 } from "lucide-react";
-import type { CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { icons } from "@/design/system";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { MONTHS, overlaps, periodBounds } from "@/lib/dates/calendar";
@@ -139,6 +139,26 @@ function FilterSection({
 
 export function LeftSidebar(props: Props) {
   const { year, month, view, categories, tags, filteredEvents } = props;
+  const scrollArea = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const element = scrollArea.current;
+    if (!element) return;
+    // Scrollbars consume part of the right inset; don't add a second gutter.
+    const measure = () => {
+      const style = getComputedStyle(element);
+      const borders =
+        parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+      const width = Math.max(
+        0,
+        element.offsetWidth - element.clientWidth - borders,
+      );
+      element.style.setProperty("--sidebar-scrollbar-width", `${width}px`);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   return (
     <>
       <div className="sidebar-brand">
@@ -162,6 +182,7 @@ export function LeftSidebar(props: Props) {
         </Link>
       </div>
       <aside
+        ref={scrollArea}
         className="left-panel"
         aria-label="Calendar navigation and filters"
         id="filters-panel"

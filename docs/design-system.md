@@ -10,7 +10,8 @@ All design definitions live in `src/design/`.
 - `components.css` contains the shared recipes for buttons, inputs, dialogs, calendar cells, cards, sidebars, and responsive geometry. It consumes token variables rather than defining another palette or type scale.
 - `system.ts` exposes the same palette and icon values to TypeScript. Components may bind a category's approved color or a dynamic week count; they must not invent visual values inline.
 - `tokens.json` also defines base sidebar widths, the 1.15 width multiplier, and menu geometry. The sidebar is consistently 15% wider across desktop, tablet, and phone breakpoints.
-- The brand row and main toolbar occupy the same grid row, so their bottom dividers stay aligned. Header height and sidebar insets are centralized layout tokens. The logo row, month overview, and filter sections consume the same inset for each breakpoint. The month grid uses the spacing scale for wider columns and balanced row gaps.
+- The brand row and main toolbar occupy the same grid row, so their bottom dividers stay aligned. Header height and sidebar insets are centralized layout tokens. The logo row, month overview, and filter sections consume the same inset for each breakpoint. Month tiles use the centralized 52px height with a thin 4px gap, so hover and selection surfaces fill their cells.
+- The sidebar's right inset includes the native scrollbar and border rather than adding another gutter. A ResizeObserver measures actual scrollbar geometry when the scroll area changes; the shared CSS recipe deducts it from the inset. Counts and trailing icons align to that content edge instead of being centered within an extra reserved control slot. This measurement is runtime geometry, not a separate design value.
 
 `src/app/globals.css` only imports the local font and these shared styles. Feature components contain markup, behavior, and references to the design system.
 

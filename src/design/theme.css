@@ -88,6 +88,7 @@
   --effect-danger-surface: color-mix(in srgb, var(--brand-negative-500) 5%, var(--surface));
   --effect-selection-ring: inset 0 0 0 1px var(--accent);
   --layout-toolbarHeight: 64px;
+  --layout-monthCellHeight: 52px;
   --layout-sidebarInset: 20px;
   --layout-sidebarInsetCompact: 14px;
   --layout-sidebarInsetMobile: 8px;
