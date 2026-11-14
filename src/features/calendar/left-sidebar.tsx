@@ -140,107 +140,111 @@ function FilterSection({
 export function LeftSidebar(props: Props) {
   const { year, month, view, categories, tags, filteredEvents } = props;
   return (
-    <aside
-      className="left-panel"
-      aria-label="Calendar navigation and filters"
-      id="filters-panel"
-    >
-      <div className="sidebar-overview">
-        <div className="sidebar-brand">
-          <Link href="/" className="brand" aria-label="Slidely Events home">
-            <Image
-              src="/brand/slidely-wordmark.png"
-              alt="Slidely AI"
-              width={120}
-              height={28}
-              priority
-              className="brand-image"
-            />
-          </Link>
-          <Link
-            href="/setup"
-            className="icon-button"
-            aria-label="Local workspace information"
-            title="Local sample workspace · Setup information"
-          >
-            <UserRound size={icons.control} />
-          </Link>
-        </div>
-        <div className="year-selector">
-          <button
-            className="icon-button"
-            aria-label="Previous year"
-            disabled={year <= 1900}
-            onClick={() => props.onYearChange(-1)}
-          >
-            <ChevronLeft size={icons.control} />
-          </button>
-          <span className="year-label" aria-live="polite">
-            {year}
-          </span>
-          <button
-            className="icon-button"
-            aria-label="Next year"
-            disabled={year >= 2200}
-            onClick={() => props.onYearChange(1)}
-          >
-            <ChevronRight size={icons.control} />
-          </button>
-        </div>
-        <div className="month-picker">
-          {MONTHS.map((name, index) => {
-            const [start, end] = periodBounds(year, index);
-            const matches = filteredEvents.filter((event) =>
-              overlaps(event.startDate, event.endDate, start, end),
-            );
-            const colors = [
-              ...new Set(matches.map((event) => event.categoryId)),
-            ];
-            return (
-              <button
-                key={name}
-                aria-label={`${name} ${year}, ${matches.length} events`}
-                aria-pressed={view === "month" && month === index}
-                className={
-                  view === "month" && month === index ? "selected" : ""
-                }
-                onClick={() => props.onMonthSelect(index)}
-              >
-                <span>{name.slice(0, 3)}</span>
-                <span className="month-dots" aria-hidden="true">
-                  {colors.slice(0, 4).map((id) => (
-                    <i
-                      key={id}
-                      style={{ background: categoryFor(id, categories).color }}
-                    />
-                  ))}
-                  {!colors.length && <i className="empty-dot" />}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+    <>
+      <div className="sidebar-brand">
+        <Link href="/" className="brand" aria-label="Slidely Events home">
+          <Image
+            src="/brand/slidely-wordmark.png"
+            alt="Slidely AI"
+            width={120}
+            height={28}
+            priority
+            className="brand-image"
+          />
+        </Link>
+        <Link
+          href="/setup"
+          className="icon-button"
+          aria-label="Local workspace information"
+          title="Local sample workspace · Setup information"
+        >
+          <UserRound size={icons.control} />
+        </Link>
       </div>
-      <FilterSection
-        title="Categories"
-        kind="categories"
-        items={[...categories, categoryFor("", categories)]}
-        selected={props.selectedCategories}
-        counts={props.categoryCounts}
-        onToggle={props.onCategoryToggle}
-        onReset={props.onCategoryReset}
-        onAction={props.onAction}
-      />
-      <FilterSection
-        title="Tags"
-        kind="tags"
-        items={tags}
-        selected={props.selectedTags}
-        counts={props.tagCounts}
-        onToggle={props.onTagToggle}
-        onReset={props.onTagReset}
-        onAction={props.onAction}
-      />
-    </aside>
+      <aside
+        className="left-panel"
+        aria-label="Calendar navigation and filters"
+        id="filters-panel"
+      >
+        <div className="sidebar-overview">
+          <div className="year-selector">
+            <button
+              className="icon-button"
+              aria-label="Previous year"
+              disabled={year <= 1900}
+              onClick={() => props.onYearChange(-1)}
+            >
+              <ChevronLeft size={icons.control} />
+            </button>
+            <span className="year-label" aria-live="polite">
+              {year}
+            </span>
+            <button
+              className="icon-button"
+              aria-label="Next year"
+              disabled={year >= 2200}
+              onClick={() => props.onYearChange(1)}
+            >
+              <ChevronRight size={icons.control} />
+            </button>
+          </div>
+          <div className="month-picker">
+            {MONTHS.map((name, index) => {
+              const [start, end] = periodBounds(year, index);
+              const matches = filteredEvents.filter((event) =>
+                overlaps(event.startDate, event.endDate, start, end),
+              );
+              const colors = [
+                ...new Set(matches.map((event) => event.categoryId)),
+              ];
+              return (
+                <button
+                  key={name}
+                  aria-label={`${name} ${year}, ${matches.length} events`}
+                  aria-pressed={view === "month" && month === index}
+                  className={
+                    view === "month" && month === index ? "selected" : ""
+                  }
+                  onClick={() => props.onMonthSelect(index)}
+                >
+                  <span>{name.slice(0, 3)}</span>
+                  <span className="month-dots" aria-hidden="true">
+                    {colors.slice(0, 4).map((id) => (
+                      <i
+                        key={id}
+                        style={{
+                          background: categoryFor(id, categories).color,
+                        }}
+                      />
+                    ))}
+                    {!colors.length && <i className="empty-dot" />}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <FilterSection
+          title="Categories"
+          kind="categories"
+          items={[...categories, categoryFor("", categories)]}
+          selected={props.selectedCategories}
+          counts={props.categoryCounts}
+          onToggle={props.onCategoryToggle}
+          onReset={props.onCategoryReset}
+          onAction={props.onAction}
+        />
+        <FilterSection
+          title="Tags"
+          kind="tags"
+          items={tags}
+          selected={props.selectedTags}
+          counts={props.tagCounts}
+          onToggle={props.onTagToggle}
+          onReset={props.onTagReset}
+          onAction={props.onAction}
+        />
+      </aside>
+    </>
   );
 }

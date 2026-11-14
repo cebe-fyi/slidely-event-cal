@@ -34,7 +34,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 34px;
+  grid-area: brand;
+  min-height: var(--layout-toolbarHeight);
+  padding-inline: var(--layout-sidebarInset);
+  background: var(--surface-subtle);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   gap: var(--space-3);
 }
 .home-button {
@@ -143,8 +148,8 @@ p {
     calc(var(--layout-sidebarBase) * var(--layout-sidebarScale))
     minmax(0, 1fr) 294px;
   height: 100dvh;
-  grid-template-rows: 64px minmax(0, 1fr);
-  grid-template-areas: "navigation toolbar toolbar" "navigation calendar events";
+  grid-template-rows: var(--layout-toolbarHeight) minmax(0, 1fr);
+  grid-template-areas: "brand toolbar toolbar" "navigation calendar events";
   min-height: 0;
   overflow: hidden;
 }
@@ -168,7 +173,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: var(--space-5) 0 var(--space-2-5);
+  margin: var(--space-2) 0 var(--space-3);
 }
 .year-label {
   display: flex;
@@ -178,7 +183,8 @@ p {
 .month-picker {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-1);
+  column-gap: var(--space-8);
+  row-gap: var(--space-2);
 }
 .month-picker > button {
   min-width: 0;
@@ -562,7 +568,7 @@ p {
   padding-top: var(--space-6);
 }
 .right-collapsed {
-  grid-template-areas: "navigation toolbar" "navigation calendar";
+  grid-template-areas: "brand toolbar" "navigation calendar";
   grid-template-columns:
     calc(var(--layout-sidebarBase) * var(--layout-sidebarScale))
     minmax(0, 1fr);
@@ -893,7 +899,7 @@ p {
       calc(var(--layout-sidebarMobile) * var(--layout-sidebarScale))
       minmax(0, 1fr);
     grid-template-rows: auto auto auto minmax(0, 1fr);
-    grid-template-areas: "navigation toolbar" "navigation search" "navigation view" "navigation calendar";
+    grid-template-areas: "brand toolbar" "navigation search" "navigation view" "navigation calendar";
     height: 100dvh;
   }
   .sidebar-brand {
@@ -915,7 +921,8 @@ p {
     gap: var(--space-1);
   }
   .month-picker {
-    gap: var(--space-half);
+    column-gap: var(--space-2);
+    row-gap: var(--space-2);
   }
   .month-picker > button {
     min-height: 45px;
@@ -1150,12 +1157,12 @@ p {
 
 /* Permanent sidebar: edge-to-edge section rules and one compact, reusable filter row. */
 .sidebar-overview {
-  padding: var(--space-6) var(--space-5) var(--space-3);
+  padding: var(--space-2) var(--layout-sidebarInset) var(--space-3);
 }
 .filter-section {
   border-top: 1px solid var(--line);
   margin: 0;
-  padding: var(--space-2) var(--space-5);
+  padding: var(--space-2) var(--layout-sidebarInset);
 }
 .section-label {
   display: flex;
@@ -1332,19 +1339,23 @@ p {
   margin-top: var(--space-4);
 }
 @media (max-width: 1150px) and (min-width: 761px) {
-  .sidebar-overview {
-    padding-inline: var(--space-3-5);
+  .sidebar-overview,
+  .sidebar-brand {
+    padding-inline: var(--layout-sidebarInsetCompact);
   }
   .filter-section {
-    padding-inline: var(--space-3-5);
+    padding-inline: var(--layout-sidebarInsetCompact);
   }
 }
 @media (max-width: 760px) {
   .sidebar-overview {
-    padding: var(--space-3-5) var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--layout-sidebarInsetMobile) var(--space-3);
+  }
+  .sidebar-brand {
+    padding-inline: var(--layout-sidebarInsetMobile);
   }
   .filter-section {
-    padding: var(--space-2);
+    padding: var(--space-2) var(--layout-sidebarInsetMobile);
   }
   .filter-row-end {
     width: 28px;
