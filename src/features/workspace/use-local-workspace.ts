@@ -77,5 +77,6 @@ export function useLocalWorkspace(year: number, month: number) {
     workspace: parsed.data,
     updateWorkspace,
     storageError: writeError || parsed.error,
+    clearStorageError: () => setWriteError(""),
   };
 }

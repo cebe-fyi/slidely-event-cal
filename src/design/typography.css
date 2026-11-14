@@ -33,6 +33,8 @@ legend {
 
 /* Primary reading and interaction: readable 14px, with medium weight for controls. */
 .filter-option,
+.modal-description,
+.dropdown-menu button,
 .month-picker > button,
 .primary-button,
 .secondary-button,
@@ -43,15 +45,8 @@ legend {
 .event-dialog label,
 .event-dialog legend,
 .form-tags label,
-.trash-link,
-.manage-tabs button,
-.manage-row strong,
-.manage-empty,
 .form-error,
 .toast,
-.manage-description,
-.manage-success,
-.vocabulary-confirm p,
 .setup-page p,
 .setup-page ol {
   font-size: var(--text-body);
@@ -65,20 +60,13 @@ legend {
 .event-card strong,
 .event-dialog label,
 .event-dialog legend,
-.manage-tabs button,
-.manage-row strong,
 .mobile-view-switch button {
   font-weight: var(--weight-medium);
 }
 
 /* Supporting information and dense calendar labels: 12px; never 8–11px. */
 .text-button,
-.all-year,
 .filter-count,
-.sidebar-note,
-.sidebar-note strong,
-.sidebar-note p,
-.sidebar-footer,
 .results-count,
 .filter-clear,
 .weekdays,
@@ -100,8 +88,6 @@ legend {
 .mini-grid,
 .small-muted,
 .form-notice,
-.manage-row div > span,
-.manage-footer,
 .empty-state p,
 .setup-page > a,
 .setup-page code,
@@ -125,8 +111,6 @@ legend {
 .period-navigation h2,
 .year-month-name,
 .empty-state h3,
-.vocabulary-editor h3,
-.vocabulary-confirm h3,
 .setup-page h2 {
   font-size: var(--text-section);
   font-weight: var(--weight-semibold);

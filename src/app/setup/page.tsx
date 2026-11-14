@@ -32,11 +32,10 @@ export default function SetupPage() {
             Keep that window open while using the calendar.
           </li>
           <li>
-            Use the settings icon beside Categories or Tags to create, edit,
-            merge, and delete them. The left sidebar stays visible on
-            phone-sized screens too.
+            Use the + beside Categories or Tags to create an item. Hover a row
+            and choose its … menu to edit, merge, or delete it. On touch devices
+            the menu buttons remain visible.
           </li>
-          <li>Use Trash in the sidebar to restore deleted events.</li>
         </ol>
         <p>
           Browser storage is tied to this exact address and browser profile.

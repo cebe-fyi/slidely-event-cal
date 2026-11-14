@@ -124,14 +124,6 @@ p {
   height: auto;
   object-fit: contain;
 }
-.workspace-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-full);
-  background: var(--muted);
-  display: inline-block;
-  flex-shrink: 0;
-}
 .icon-button {
   padding: 0;
   min-width: 30px;
@@ -147,7 +139,9 @@ p {
 }
 .workspace {
   display: grid;
-  grid-template-columns: 238px minmax(0, 1fr) 294px;
+  grid-template-columns:
+    calc(var(--layout-sidebarBase) * var(--layout-sidebarScale))
+    minmax(0, 1fr) 294px;
   height: 100dvh;
   grid-template-rows: 64px minmax(0, 1fr);
   grid-template-areas: "navigation toolbar toolbar" "navigation calendar events";
@@ -158,7 +152,7 @@ p {
   grid-area: navigation;
   background: var(--surface-subtle);
   border-right: 1px solid var(--line);
-  padding: var(--space-6) var(--space-5) var(--space-3-5);
+  padding: 0;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -225,89 +219,12 @@ p {
   width: 3px;
   height: 3px;
 }
-.all-year {
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
-  padding: var(--space-3) var(--space-2);
-  margin: var(--space-2-5) 0 var(--space-5);
-  color: var(--muted);
-}
-.all-year > svg:last-child {
-  margin-left: auto;
-}
-.all-year.active {
-  color: var(--accent);
-  background: var(--accent-light);
-  border-radius: var(--radius-md);
-}
-.filter-section {
-  border-top: 1px solid var(--line);
-  padding-top: var(--space-5);
-  margin-bottom: var(--space-5);
-}
-.section-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-3);
-}
 .text-button {
   color: var(--muted);
   padding: var(--space-half) 0;
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-}
-.filter-option {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 34px;
-  cursor: pointer;
-  color: var(--secondary);
-}
-.filter-option input {
-  width: 13px;
-  height: 13px;
-  margin: 0;
-  accent-color: var(--ink);
-  cursor: pointer;
-}
-.category-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-full);
-  display: inline-block;
-  flex-shrink: 0;
-}
-.filter-count {
-  margin-left: auto;
-  color: var(--faint);
-}
-.sidebar-note {
-  margin-top: auto;
-  background: var(--surface-muted);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3-5);
-}
-.note-icon {
-  display: block;
-  color: var(--accent);
-  margin-bottom: var(--space-2);
-}
-.sidebar-note p {
-  margin-top: var(--space-1-5);
-  color: var(--muted);
-}
-.sidebar-footer {
-  display: flex;
-  gap: var(--space-1-5);
-  align-items: center;
-  color: var(--muted);
-  margin-top: var(--space-5);
-  padding: 0 var(--space-px);
 }
 .calendar-main {
   grid-area: calendar;
@@ -646,7 +563,9 @@ p {
 }
 .right-collapsed {
   grid-template-areas: "navigation toolbar" "navigation calendar";
-  grid-template-columns: 238px minmax(0, 1fr);
+  grid-template-columns:
+    calc(var(--layout-sidebarBase) * var(--layout-sidebarScale))
+    minmax(0, 1fr);
 }
 .right-collapsed .right-panel {
   display: none;
@@ -910,10 +829,14 @@ p {
 }
 @media (min-width: 1500px) {
   .workspace {
-    grid-template-columns: 250px minmax(0, 1fr) 320px;
+    grid-template-columns:
+      calc(var(--layout-sidebarWide) * var(--layout-sidebarScale))
+      minmax(0, 1fr) 320px;
   }
   .workspace.right-collapsed {
-    grid-template-columns: 250px minmax(0, 1fr);
+    grid-template-columns:
+      calc(var(--layout-sidebarWide) * var(--layout-sidebarScale))
+      minmax(0, 1fr);
   }
   .calendar-main {
     padding: 0 var(--space-7) var(--space-6);
@@ -930,14 +853,14 @@ p {
 }
 @media (max-width: 1150px) and (min-width: 761px) {
   .workspace {
-    grid-template-columns: 200px minmax(0, 1fr) 240px;
+    grid-template-columns:
+      calc(var(--layout-sidebarCompact) * var(--layout-sidebarScale))
+      minmax(0, 1fr) 240px;
   }
   .workspace.right-collapsed {
-    grid-template-columns: 200px minmax(0, 1fr);
-  }
-  .left-panel {
-    padding-left: var(--space-3-5);
-    padding-right: var(--space-3-5);
+    grid-template-columns:
+      calc(var(--layout-sidebarCompact) * var(--layout-sidebarScale))
+      minmax(0, 1fr);
   }
   .calendar-main {
     padding: 0 var(--space-4) var(--space-4);
@@ -966,15 +889,12 @@ p {
   /* The left rail stays visible at every width; only the event list changes surface. */
   .workspace,
   .workspace.right-collapsed {
-    grid-template-columns: 140px minmax(0, 1fr);
+    grid-template-columns:
+      calc(var(--layout-sidebarMobile) * var(--layout-sidebarScale))
+      minmax(0, 1fr);
     grid-template-rows: auto auto auto minmax(0, 1fr);
     grid-template-areas: "navigation toolbar" "navigation search" "navigation view" "navigation calendar";
     height: 100dvh;
-  }
-  .left-panel {
-    display: flex;
-    padding: var(--space-3-5) var(--space-2);
-    border-right: 1px solid var(--line);
   }
   .sidebar-brand {
     gap: var(--space-half);
@@ -994,59 +914,11 @@ p {
   .year-label {
     gap: var(--space-1);
   }
-  .year-label > svg {
-    display: none;
-  }
   .month-picker {
     gap: var(--space-half);
   }
   .month-picker > button {
     min-height: 45px;
-  }
-  .all-year {
-    padding: var(--space-2) 0;
-    margin: var(--space-2) 0 var(--space-4);
-    gap: var(--space-1);
-    min-height: 40px;
-  }
-  .all-year > svg:last-child {
-    display: none;
-  }
-  .section-label {
-    margin-bottom: var(--space-1);
-  }
-  .filter-section {
-    padding-top: var(--space-3);
-    margin-bottom: var(--space-4);
-  }
-  .filter-option {
-    gap: var(--space-1);
-    min-height: 40px;
-  }
-  .filter-option
-    > span:not(.category-dot):not(.tag-outline):not(.filter-count) {
-    flex: 1;
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-  .filter-option input {
-    width: 13px;
-    height: 13px;
-    flex-shrink: 0;
-  }
-  .filter-count {
-    display: none;
-  }
-  .category-dot {
-    width: 6px;
-    height: 6px;
-  }
-  .sidebar-note,
-  .sidebar-footer {
-    display: none;
-  }
-  .left-panel .manage-button {
-    min-width: 28px;
   }
   .calendar-toolbar {
     padding: var(--space-2-5);
@@ -1257,23 +1129,7 @@ p {
   }
 }
 
-/* Local workspace management; native dialogs supply focus trapping and Escape handling. */
-.manage-button {
-  margin-left: auto;
-}
-.section-label .text-button {
-  margin-left: var(--space-1-5);
-}
-.trash-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-half) var(--space-5);
-  color: var(--muted);
-}
-.trash-link > span {
-  margin-left: auto;
-}
+/* Event tags bind their approved palette colors through data, not new style values. */
 .event-tags > span {
   display: inline-flex;
   align-items: center;
@@ -1291,137 +1147,239 @@ p {
   padding: var(--space-3) var(--space-6);
   margin: 0;
 }
-.taxonomy-dialog {
-  max-width: 660px;
+
+/* Permanent sidebar: edge-to-edge section rules and one compact, reusable filter row. */
+.sidebar-overview {
+  padding: var(--space-6) var(--space-5) var(--space-3);
 }
-.manage-content {
-  padding: var(--space-6);
+.filter-section {
+  border-top: 1px solid var(--line);
+  margin: 0;
+  padding: var(--space-2) var(--space-5);
 }
-.manage-tabs {
-  display: flex;
-  gap: var(--space-1);
-  border-bottom: 1px solid var(--line);
-  margin: var(--space-5) 0 var(--space-3-5);
-}
-.manage-tabs button {
-  min-height: 44px;
-  padding: var(--space-2-5) var(--space-3-5);
-  color: var(--muted);
-  border-bottom: 2px solid transparent;
-}
-.manage-tabs button[aria-pressed="true"] {
-  color: var(--ink);
-  border-color: var(--accent);
-}
-.manage-description {
-  color: var(--muted);
-  margin-bottom: var(--space-4);
-}
-.manage-list {
-  margin-bottom: var(--space-3-5);
-}
-.manage-row {
+.section-label {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3-5) 0;
-  border-bottom: 1px solid var(--line);
+  min-height: 36px;
+  margin-bottom: var(--space-1);
 }
-.manage-row .icon-button {
-  min-width: 32px;
+.section-label h2 {
+  margin-right: auto;
 }
-.manage-row strong {
-  display: block;
+.section-add {
+  margin-left: var(--space-1);
+}
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+  min-height: 36px;
+  border-radius: var(--radius-md);
+}
+.filter-row:hover,
+.filter-row:focus-within {
+  background: var(--surface-hover);
+}
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  flex: 1;
+  padding: var(--space-2) 0;
+  cursor: pointer;
+  color: var(--secondary);
+}
+.filter-name {
+  min-width: 0;
   overflow-wrap: anywhere;
 }
-.manage-row div > span {
-  display: block;
-  color: var(--muted);
-  margin-top: var(--space-1);
-}
-.manage-item-name {
-  flex: 1;
-  min-width: 0;
-}
-.manage-color {
-  width: 11px;
-  height: 11px;
-  border-radius: var(--radius-full);
+.color-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  position: relative;
   flex-shrink: 0;
 }
-.manage-empty {
-  padding: var(--space-7) 0;
-  color: var(--muted);
+.color-checkbox input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--filter-color);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  margin: 0;
+  cursor: pointer;
 }
-.event-dialog .vocabulary-editor {
-  padding: var(--space-4);
+.color-checkbox input:checked {
+  background: var(--filter-color);
+}
+.color-checkbox svg {
+  position: absolute;
+  pointer-events: none;
+  color: var(--on-primary);
+  opacity: 0;
+}
+.color-checkbox input:checked + svg {
+  opacity: 1;
+}
+.filter-row-end {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.filter-count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.item-options {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+.filter-row-end:has(.item-options[aria-expanded="true"]) .filter-count {
+  opacity: 0;
+}
+.filter-row:hover .item-options,
+.filter-row:focus-within .item-options,
+.item-options[aria-expanded="true"] {
+  opacity: 1;
+}
+.filter-row:hover .filter-row-end:not(.no-menu) .filter-count,
+.filter-row:focus-within .filter-row-end:not(.no-menu) .filter-count {
+  opacity: 0;
+}
+.dropdown-menu {
+  position: fixed;
+  left: var(--menu-x);
+  top: var(--menu-y);
+  width: var(--layout-menuWidth);
+  padding: var(--layout-menuGap);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: var(--surface-subtle);
+  box-shadow: var(--shadow-popover);
+  background: var(--surface);
+  z-index: 50;
+  max-height: calc(100dvh - 2 * var(--layout-menuGap));
+  overflow-y: auto;
 }
-.vocabulary-editor h3,
-.vocabulary-confirm h3 {
-  margin-bottom: var(--space-4);
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  min-height: var(--layout-menuItemHeight);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1-5) var(--space-3);
 }
-.vocabulary-fields {
+.dropdown-menu button:hover,
+.dropdown-menu button:focus-visible {
+  background: var(--surface-hover);
+  outline-offset: -2px;
+}
+.dropdown-menu .danger-menu-item {
+  color: var(--danger);
+}
+
+/* Shared modal chrome, form fields, actions and confirmation variants. */
+.event-dialog .modal-content {
+  padding: var(--space-6);
+}
+.modal-content .dialog-header {
+  margin-bottom: var(--space-3);
+}
+.modal-description {
+  color: var(--muted);
+  margin-bottom: var(--space-5);
+}
+.modal-body {
   display: flex;
-  gap: var(--space-3-5);
+  flex-direction: column;
+  gap: var(--space-4);
 }
-.vocabulary-fields > label:first-child {
+.form-field {
+  min-width: 0;
+}
+.form-field > label {
+  margin: 0 0 var(--space-2);
+}
+.form-row > .form-field {
   flex: 1;
   min-width: 0;
 }
-.vocabulary-fields > label:last-child {
-  width: 160px;
+.modal-content .dialog-actions {
+  padding-top: var(--space-5);
 }
-.vocabulary-fields input[type="color"] {
-  padding: var(--space-half);
-  height: 40px;
-  cursor: pointer;
+.modal-leading-action {
+  margin-right: auto;
 }
-.vocabulary-confirm {
-  border: 1px solid var(--border-strong);
-  background: var(--surface-subtle);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
+.text-button.danger {
+  color: var(--danger);
 }
-.vocabulary-confirm p {
-  color: var(--secondary);
-  margin-bottom: var(--space-4);
+.primary-button.danger-button {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--on-primary);
 }
-.manage-success {
-  padding: var(--space-2-5);
-  color: var(--success);
-  background: var(--success-surface);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-3);
+.shared-modal .form-error {
+  margin-top: var(--space-4);
 }
-.manage-footer {
-  margin-top: var(--space-5);
-  color: var(--muted);
-  border-top: 1px solid var(--line);
-  padding-top: var(--space-3-5);
-}
-.trash-list .manage-row {
-  justify-content: space-between;
+@media (max-width: 1150px) and (min-width: 761px) {
+  .sidebar-overview {
+    padding-inline: var(--space-3-5);
+  }
+  .filter-section {
+    padding-inline: var(--space-3-5);
+  }
 }
 @media (max-width: 760px) {
-  .manage-content {
-    padding: var(--space-6) var(--space-4);
+  .sidebar-overview {
+    padding: var(--space-3-5) var(--space-2) var(--space-3);
   }
-  .manage-row {
+  .filter-section {
+    padding: var(--space-2);
+  }
+  .filter-row-end {
+    width: 28px;
+  }
+  .filter-row-end .item-options {
+    min-width: 28px;
+    height: 30px;
+  }
+  .section-label {
+    gap: var(--space-1);
+  }
+  .section-label .icon-button {
+    min-width: 26px;
+  }
+  .section-label .text-button {
+    padding: 0;
+  }
+  .filter-option {
     gap: var(--space-1-5);
   }
-  .manage-row .icon-button {
-    min-width: 36px;
-    min-height: 44px;
+  .event-dialog .modal-content {
+    padding: var(--space-5);
   }
-  .manage-tabs button {
-    flex: 1;
-    padding: var(--space-2-5) var(--space-1-5);
+}
+@media (hover: none) {
+  .filter-row-end {
+    width: auto;
+    gap: var(--space-half);
   }
-  .trash-link {
-    min-height: 44px;
-    padding: var(--space-2-5) 0;
+  .filter-row-end .item-options {
+    position: static;
+    opacity: 1;
+  }
+  .filter-row:hover .filter-row-end .filter-count,
+  .filter-row:focus-within .filter-row-end .filter-count {
+    opacity: 1;
   }
 }

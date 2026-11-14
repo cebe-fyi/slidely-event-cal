@@ -1,7 +1,7 @@
 # Slidely team event calendar
 
 Last updated: 14 November 2026 (Asia/Kolkata)
-Status: Local-first development, per user instruction. Initial calendar plus browser-persistent event/category/tag management and recoverable trash implemented. GitHub upload and Vercel deployment are deferred; pending device sign-in was canceled. Supabase, authentication, Gemini, and map integrations remain pending.
+Status: Local-first development with sample data. Calendar and browser-persistent event/category/tag management implemented. Sidebar refined with + create controls, colored checkbox filters, counts, row menus, and common form/confirmation modals. Trash UI removed per user request; internal event recovery data is retained. GitHub upload and Vercel deployment are deferred. Supabase, authentication, Gemini, and map integrations remain pending.
 Owner: Jay / Slidely AI
 Repository: https://github.com/cebe-fyi/slidely-event-cal.git
 Confirmed first app admin: `cebe@slidely.ai` (provided as `Cebe@slidely.ai`; normalize email for matching). Admin provisioning is pending verified login and database setup.
@@ -46,6 +46,7 @@ These choices do not block a local mock-data prototype.
 - Right panel: events for the selected period, in ascending date order, grouped under readable date headings. Show title, date range, location/Online, category, and useful tags. Do not show times.
 - Only the right panel collapses. Retain an accessible button to reopen it and save that preference locally. The center expands into the freed space; the left sidebar remains full-height and visible regardless of any old saved left-collapse preference.
 - Use consistently thin scrollbars for the left sidebar, calendar content, right event list, and dialogs.
+- Sidebar widths are 15% wider than their previous desktop/tablet/phone bases, via central layout tokens. Dividers span the full sidebar width, with compact spacing. The sidebar contains no Trash link, notes, footer promo, or AI marketing card.
 - Clicking an event opens a details sheet with source link, description, edit, and delete actions.
 
 ### 2.2 Monthly calendar
@@ -61,7 +62,7 @@ These choices do not block a local mock-data prototype.
 - Center yearly view: twelve compact month calendars with category dots/counts and keyboard-accessible month selection.
 - Choosing a year shows that year's event list. Choosing a month drills into the monthly view and its list.
 - Left navigator remains the simpler twelve-month selector. Dots summarize categories represented in each month's overlapping events; cap visible dots and show an overflow count.
-- Use an explicit All year control to reset the period to the year without ambiguous double-click interactions.
+- The sidebar year is plain text between previous/next arrows; it has no dropdown or View all year shortcut. Use Year in the main toolbar for the yearly view and its event list.
 
 ### 2.4 Event list, search, and filters
 
@@ -90,6 +91,9 @@ Optional: summary, organizer, official URL, registration URL, venue, city, regio
 ### 2.6 Categories and tags
 
 - Both support name, accessible color, create, rename, recolor, merge, and delete.
+- Each section has a + create control. A single category/tag-colored checkbox combines filtering and the color marker. Counts appear on the right; hover or keyboard focus shows … with Edit, Merge, Delete. Touch devices keep the menu trigger visible. Uncategorized remains a protected system fallback.
+- Counts use the selected month/year and search, plus filters from the opposite group; they ignore their own group's selection so other choices keep informative counts. Multi-day events are counted once.
+- All create/edit dialogs configure the same shared form template with Name and Slidely Color. Merge configures the common confirmation template with a required destination. Delete uses that same confirmation template, explains impact, and preserves events. Shared modal/field/action components also serve event editing; no duplicate modal shells in feature code.
 - Category examples: SaaS, Healthcare, Education. Tag examples: Speaking opportunity, Sponsor prospect, India. These are illustrative, not approved seed data.
 - Prevent blank names and case-insensitive duplicates after trimming.
 - Merge preview shows the target and number of affected events. Merge categories by reassigning references; merge tags by combining links and removing duplicates. Perform each merge in one database transaction.
@@ -372,7 +376,7 @@ Checkpoint: production passes the launch checklist, and the team knows the URL a
 - [x] P0: Install and read Vercel React best practices, Vercel web design guidelines, Supabase Postgres best practices, and Anthropic frontend design skills.
 - [x] P1: Next.js scaffold and mock-data desktop/mobile prototype with month/year/list/panels, search, filters, and sample event editing. Official wordmark and live brand tokens verified. Central Slidely palette and Inter typography system implemented. Desktop and phone interaction checks passed.
 - [ ] P2: Development Supabase, migrations, domain-restricted OTP, session persistence, membership and RLS tests.
-- [ ] P3: Persistent event CRUD, search/filters, concurrency handling, categories/tags including atomic merge/delete, audit/trash.
+- [ ] P3: Persistent event CRUD, search/filters, concurrency handling, categories/tags including atomic merge/delete, audit/recovery. Sidebar Trash navigation is intentionally removed; any future recovery UI must respect that decision.
   - Local prototype subset: events/categories/tags persist in this browser, vocabulary create/edit/recolor/merge/delete is implemented, and trash/restore is available. Shared persistence, server authorization, audit history, and multi-user conflict handling are still pending; this does not complete P3.
 - [ ] P4: Gemini enrichment with evidence review, failure states, rate limits, and manual fallback.
 - [ ] P5: Map/geocoding integration, shared filters, clusters, and online/unlocated-event behavior.
@@ -459,3 +463,4 @@ Supporting official documentation (checked during planning; recheck when impleme
 - 2026-11-14: User requested layout-only refinement while keeping local sample data: removed global navbar and preview banner, moved Slidely identity into the permanent full-height left sidebar, consolidated calendar controls into a compact toolbar, removed introductory heading and all left-collapse controls/state, retained right-panel collapse/reopen, and applied thin scrollbars throughout. Updated the responsive layout to retain a narrow permanent left rail. No service integrations, uploads, or sample-data changes included.
 - 2026-11-14: Layout verified in-browser at desktop and 360/390px phone widths: left sidebar bounds start at y=0 and fill the viewport, no left-collapse controls exist, right collapse/reopen preserves the left rail, mobile list remains usable with a saved desktop right-collapse preference, and no horizontal overflow or browser errors were observed. TypeScript, lint, and production build pass. Preview screenshot: ignored `artifacts/calendar-layout.jpg`.
 - 2026-11-14: Centralized all editable design values in `src/design/tokens.json`, generated CSS variables, semantic typography role assignments, shared component recipes, and TypeScript palette/icon accessors. Verified Slidely's named palette against live site CSS. Replaced arbitrary color selection with six Slidely options; legacy sample colors migrate while retaining names, IDs, dates, event associations, and trash. Added locally hosted Inter and its font license; type scale is limited to 12/14/16/20px with 400/500/600 weights. Added `docs/design-system.md`, a generation consistency check, and CI checks that reject scattered raw color/type/icon definitions. The app icon now uses Slidely's official logo mark. Eleven domain tests pass, including legacy-data preservation. Browser checks confirmed Inter loaded, intended type sizes, palette-only options, and no sidebar/dialog horizontal overflow at 390px. Local work only; no upload or deployment.
+- 2026-11-14: Refined the left sidebar per user screenshots: 15% wider at each breakpoint, edge-to-edge dividers with tighter spacing, plain year between arrows, no View all year link, no Trash/promo/note/footer. Categories and tags now share + create controls, integrated colored checkboxes, period/search-aware facet counts, and hover/focus … menus with Edit/Merge/Delete. Uncategorized remains protected. Added shared Modal, FormField, ModalActions, FormModal, ConfirmModal and DropdownMenu components; migrated both vocabulary actions and event editing to them. A design check prevents feature-specific dialog shells. Merge requires a destination; deletion requires confirmation and keeps events. Browser verified create/edit/merge, delete cancellation and confirmation, autofocus/Escape behavior, 273.7px desktop rail (238px × 1.15), colored checkbox state, and mobile popup placement/width. Fifteen tests pass, including four new count tests. Production build passes. No GitHub push or deployment.

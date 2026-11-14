@@ -87,4 +87,12 @@
   --effect-backdrop: rgb(17 17 17 / 0.4);
   --effect-danger-surface: color-mix(in srgb, var(--brand-negative-500) 5%, var(--surface));
   --effect-selection-ring: inset 0 0 0 1px var(--accent);
+  --layout-sidebarBase: 238px;
+  --layout-sidebarWide: 250px;
+  --layout-sidebarCompact: 200px;
+  --layout-sidebarMobile: 140px;
+  --layout-sidebarScale: 1.15;
+  --layout-menuWidth: 176px;
+  --layout-menuGap: 4px;
+  --layout-menuItemHeight: 36px;
 }

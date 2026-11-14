@@ -37,6 +37,11 @@ async function inspect(directory) {
     const relative = path.relative(root, file).replaceAll("\\", "/");
     const text = await readFile(file, "utf8");
     if (!relative.startsWith("src/design/")) {
+      if (relative !== "src/components/ui/modal.tsx")
+        assert.ok(
+          !/<dialog\b|\.showModal\(/.test(text),
+          `Reuse the shared modal components instead of defining another modal shell in ${relative}.`,
+        );
       assert.ok(
         !/#[\da-f]{3,8}\b/i.test(text),
         `Put color values in design/tokens.json, not ${relative}.`,

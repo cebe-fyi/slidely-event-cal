@@ -2,26 +2,19 @@
 
 import { icons } from "@/design/system";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useState, useSyncExternalStore, type CSSProperties } from "react";
 import {
   ArrowUpRight,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
-  ChevronsUpDown,
   List,
   House,
-  UserRound,
   MapPin,
   PanelRightClose,
   PanelRightOpen,
   Plus,
   Search,
-  Settings2,
-  Sparkles,
-  Trash2,
   X,
 } from "lucide-react";
 import {
@@ -39,8 +32,13 @@ import {
   type Category,
   type TeamEvent,
 } from "@/features/events/types";
-import { EventDialog } from "@/features/events/event-dialog";
-import { TaxonomyDialog } from "@/features/taxonomy/taxonomy-dialog";
+import { EventDialog } from "@/features/events/event-modal";
+import {
+  VocabularyModal,
+  type VocabularyRequest,
+} from "@/features/taxonomy/vocabulary-modal";
+import { LeftSidebar } from "./left-sidebar";
+import { sidebarCounts } from "./filter-counts";
 import { useLocalWorkspace } from "@/features/workspace/use-local-workspace";
 import { trashEvent } from "@/features/workspace/model";
 
@@ -96,13 +94,12 @@ export function CalendarWorkspace({ today }: { today: string }) {
     workspace: data,
     updateWorkspace,
     storageError,
+    clearStorageError,
   } = useLocalWorkspace(todayYear, todayMonth - 1);
   const events = data.events;
   const categoryFor = (id: string) => findCategory(id, data.categories);
   const eventStyle = (id: string) => colorStyle(id, data.categories);
-  const [managing, setManaging] = useState<
-    "categories" | "tags" | "trash" | null
-  >(null);
+  const [managing, setManaging] = useState<VocabularyRequest | null>(null);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
@@ -127,6 +124,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
   const periodEvents = filtered.filter((event) =>
     overlaps(event.startDate, event.endDate, start, end),
   );
+  const counts = sidebarCounts(events, start, end, search, categories, tags);
   const listEvents = periodEvents
     .filter(
       (event) =>
@@ -217,184 +215,33 @@ export function CalendarWorkspace({ today }: { today: string }) {
         </p>
       )}
       <div className={`workspace ${rightClosed ? "right-collapsed" : ""}`}>
-        <aside
-          className="left-panel"
-          aria-label="Calendar navigation and filters"
-          id="filters-panel"
-        >
-          <div className="sidebar-brand">
-            <Link href="/" className="brand" aria-label="Slidely Events home">
-              <Image
-                src="/brand/slidely-wordmark.png"
-                alt="Slidely AI"
-                width={120}
-                height={28}
-                priority
-                className="brand-image"
-              />
-            </Link>
-            <Link
-              href="/setup"
-              className="icon-button"
-              aria-label="Local workspace information"
-              title="Local sample workspace · Setup information"
-            >
-              <UserRound size={icons.control} />
-            </Link>
-          </div>
-          <div className="year-selector">
-            <button
-              className="icon-button"
-              aria-label="Previous year"
-              onClick={() => {
-                setYear((y) => Math.max(1900, y - 1));
-                setSelectedDay(null);
-              }}
-            >
-              <ChevronLeft size={icons.control} />
-            </button>
-            <button
-              className="year-label"
-              onClick={() => {
-                setView("year");
-                setSelectedDay(null);
-              }}
-            >
-              {year}
-              <ChevronsUpDown size={icons.inline} />
-            </button>
-            <button
-              className="icon-button"
-              aria-label="Next year"
-              onClick={() => {
-                setYear((y) => Math.min(2200, y + 1));
-                setSelectedDay(null);
-              }}
-            >
-              <ChevronRight size={icons.control} />
-            </button>
-          </div>
-          <div className="month-picker">
-            {MONTHS.map((name, index) => {
-              const [a, b] = periodBounds(year, index);
-              const monthEvents = filtered.filter((event) =>
-                overlaps(event.startDate, event.endDate, a, b),
-              );
-              const colors = [...new Set(monthEvents.map((e) => e.categoryId))];
-              return (
-                <button
-                  key={name}
-                  aria-label={`${name} ${year}, ${monthEvents.length} events`}
-                  aria-pressed={view === "month" && month === index}
-                  className={
-                    view === "month" && month === index ? "selected" : ""
-                  }
-                  onClick={() => selectMonth(index)}
-                >
-                  <span>{name.slice(0, 3)}</span>
-                  <span className="month-dots" aria-hidden="true">
-                    {colors.slice(0, 4).map((c) => (
-                      <i key={c} style={{ background: categoryFor(c).color }} />
-                    ))}
-                    {!colors.length && <i className="empty-dot" />}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          <button
-            className={`all-year ${view === "year" ? "active" : ""}`}
-            onClick={() => {
-              setView("year");
-              setSelectedDay(null);
-            }}
-          >
-            <CalendarDays size={icons.control} /> View all of {year}
-            <ChevronRight size={icons.control} />
-          </button>
-          <div className="filter-section">
-            <div className="section-label">
-              <h2>Categories</h2>
-              <button
-                className="icon-button manage-button"
-                aria-label="Manage categories"
-                onClick={() => setManaging("categories")}
-              >
-                <Settings2 size={icons.control} />
-              </button>
-              {categories.length > 0 && (
-                <button
-                  className="text-button"
-                  onClick={() => setCategories([])}
-                >
-                  Reset
-                </button>
-              )}
-            </div>
-            {[...data.categories, categoryFor("")].map((c) => (
-              <label className="filter-option" key={c.id}>
-                <input
-                  type="checkbox"
-                  checked={categories.includes(c.id)}
-                  onChange={() => toggleFilter(c.id, categories, setCategories)}
-                />
-                <span
-                  className="category-dot"
-                  style={{ background: c.color }}
-                />
-                <span>{c.name}</span>
-                <span className="filter-count">
-                  {periodEvents.filter((e) => e.categoryId === c.id).length}
-                </span>
-              </label>
-            ))}
-          </div>
-          <div className="filter-section">
-            <div className="section-label">
-              <h2>Tags</h2>
-              <button
-                className="icon-button manage-button"
-                aria-label="Manage tags"
-                onClick={() => setManaging("tags")}
-              >
-                <Settings2 size={icons.control} />
-              </button>
-              {tags.length > 0 && (
-                <button className="text-button" onClick={() => setTags([])}>
-                  Reset
-                </button>
-              )}
-            </div>
-            {data.tags.map((tag) => (
-              <label className="filter-option" key={tag.id}>
-                <input
-                  type="checkbox"
-                  checked={tags.includes(tag.id)}
-                  onChange={() => toggleFilter(tag.id, tags, setTags)}
-                />
-                <span className="tag-outline" style={{ color: tag.color }}>
-                  #
-                </span>
-                <span>{tag.name}</span>
-              </label>
-            ))}
-          </div>
-          <button className="trash-link" onClick={() => setManaging("trash")}>
-            <Trash2 size={icons.control} />
-            Trash <span>{data.trash.length}</span>
-          </button>
-          <div className="sidebar-note">
-            <span className="note-icon">
-              <Sparkles size={icons.control} />
-            </span>
-            <strong>One link. All the details.</strong>
-            <p>AI-assisted event entry is coming when Gemini is connected.</p>
-          </div>
-          <div className="sidebar-footer">
-            <span className="workspace-dot" />
-            Sample data · Saved in this browser
-          </div>
-        </aside>
+        <LeftSidebar
+          year={year}
+          month={month}
+          view={view}
+          categories={data.categories}
+          tags={data.tags}
+          filteredEvents={filtered}
+          selectedCategories={categories}
+          selectedTags={tags}
+          categoryCounts={counts.categories}
+          tagCounts={counts.tags}
+          onYearChange={(amount) => {
+            setYear((current) =>
+              Math.min(2200, Math.max(1900, current + amount)),
+            );
+            setSelectedDay(null);
+          }}
+          onMonthSelect={selectMonth}
+          onCategoryToggle={(id) => toggleFilter(id, categories, setCategories)}
+          onTagToggle={(id) => toggleFilter(id, tags, setTags)}
+          onCategoryReset={() => setCategories([])}
+          onTagReset={() => setTags([])}
+          onAction={(request) => {
+            clearStorageError();
+            setManaging(request);
+          }}
+        />
 
         <header className="calendar-toolbar" aria-label="Calendar controls">
           <div className="period-navigation">
@@ -818,15 +665,14 @@ export function CalendarWorkspace({ today }: { today: string }) {
           onDelete={(id) => {
             if (!updateWorkspace((current) => trashEvent(current, id))) return;
             setEditing(undefined);
-            setNotice(
-              "Event moved to trash. Open Trash in the sidebar to restore it.",
-            );
+            setNotice("Event removed from this local calendar.");
           }}
         />
       )}
       {managing && (
-        <TaxonomyDialog
-          initialTab={managing}
+        <VocabularyModal
+          key={`${managing.kind}-${managing.action}-${managing.id ?? "new"}`}
+          request={managing}
           data={data}
           error={storageError}
           onChange={(update) => {

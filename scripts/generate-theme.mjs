@@ -32,6 +32,7 @@ add("space-", tokens.spacing);
 add("radius-", tokens.radii);
 add("shadow-", tokens.shadows);
 add("effect-", tokens.effects);
+add("layout-", tokens.layout);
 lines.push("}", "");
 const output = lines.join("\n");
 const target = path.join(root, "src/design/theme.css");

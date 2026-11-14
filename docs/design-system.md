@@ -9,6 +9,7 @@ All design definitions live in `src/design/`.
 - `typography.css` assigns semantic text roles to shared component selectors. It is the only place that assigns font sizes, weights, families, tracking, and line heights.
 - `components.css` contains the shared recipes for buttons, inputs, dialogs, calendar cells, cards, sidebars, and responsive geometry. It consumes token variables rather than defining another palette or type scale.
 - `system.ts` exposes the same palette and icon values to TypeScript. Components may bind a category's approved color or a dynamic week count; they must not invent visual values inline.
+- `tokens.json` also defines base sidebar widths, the 1.15 width multiplier, and menu geometry. The sidebar is consistently 15% wider across desktop, tablet, and phone breakpoints.
 
 `src/app/globals.css` only imports the local font and these shared styles. Feature components contain markup, behavior, and references to the design system.
 
@@ -40,6 +41,10 @@ The official wordmark and logo mark remain image assets. Shadows/backdrops use n
 Existing browser-saved categories/tags using the old palette are mapped to approved colors on read. Event dates, text, names, IDs, associations, and trash are preserved. The normalized palette is persisted on the next successful workspace save.
 
 ## Shared visual conventions
+
+All modal UI uses `src/components/ui/modal.tsx`: `Modal` supplies one accessible shell with focus/Escape handling, shared headers, error placement and actions; `FormField` supplies consistent labeled inputs; `FormModal` configures create/edit from a field list; `ConfirmModal` configures merge/delete. The event form also consumes this shell and field/action components. Feature code must not create another `<dialog>` or implement its own modal chrome; the design check enforces that rule.
+
+Sidebar row actions use the common `DropdownMenu`. It handles outside click, keyboard navigation, Escape, focus return, portal rendering, and viewport placement. Counts give way to the … trigger on hover/focus; touch devices display the trigger alongside the count. Categories and tags reuse one sidebar section/row recipe and a single colored checkbox, without a separate color dot.
 
 - Use the spacing scale, primarily multiples of 4px. Half steps exist for compact labels, borders, and icon alignment.
 - Use four radii: small 4px, medium 6px, large 8px, and dialog 12px. Circular dates/indicators use the explicit full-radius token.

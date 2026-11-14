@@ -15,7 +15,7 @@
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/dates.test.ts tests/workspace.test.ts",
+    "test": "tsx --test tests/dates.test.ts tests/workspace.test.ts tests/sidebar-counts.test.ts",
     "format": "prettier --write src tests package.json tsconfig.json next.config.ts eslint.config.mjs"
   },
   "dependencies": {

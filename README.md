@@ -10,7 +10,8 @@ A Next.js and TypeScript team event calendar. This first deployable milestone us
 - Responsive calendar/list navigation and a labeled, keyboard-accessible event dialog.
 - Add/edit events, with browser-local storage that survives reloads.
 - Create/edit/recolor/merge/delete categories and tags, with previews of affected events.
-- Recover deleted events from Trash. Associations stay consistent even when vocabulary changes while an event is trashed.
+- Compact, full-width sidebar sections with a 15% wider rail, colored checkbox filters, event counts, and row menus. Use the section + to create an item or its … menu to edit, merge, or delete it.
+- Shared form and confirmation modals for event and vocabulary actions. Event removal keeps internal recovery data; the Trash navigation has been removed from this version.
 - On-screen setup guide at `/setup`.
 
 ## What comes next
@@ -50,7 +51,7 @@ First planned admin: `cebe@slidely.ai`, after verified login and explicit provis
 ## Verification
 
 - `npm run lint`: lint and React/Next checks.
-- `npm test`: dates/timezones, merge/reassignment, deduplication, trash/restore, and saved-data validation (10 tests).
+- `npm test`: dates/timezones, merge/reassignment, deduplication, trash/restore, and saved-data validation (15 tests, including sidebar count/filter behavior).
 - `npm run build`: production compilation.
 - `npm run typecheck`: strict TypeScript checks (run after build on a clean checkout).
 

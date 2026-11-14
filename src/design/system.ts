@@ -1,6 +1,7 @@
 import tokens from "./tokens.json";
 
 export const icons = tokens.icons;
+export const layout = tokens.layout;
 const colors = tokens.colors as Record<string, string>;
 export const brandPalette = tokens.palette.map((item) => ({
   id: item.id,
