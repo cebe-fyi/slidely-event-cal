@@ -60,8 +60,10 @@ GitHub Actions runs these checks for pushes and pull requests.
 
 ## Source structure
 
+All design tokens and shared style recipes live in `src/design/`. Read `docs/design-system.md` for the four typography roles, Slidely palette, and editing rules. `npm run design:check` prevents scattered color/type/icon definitions. The generated theme is refreshed automatically before dev/build. Inter is hosted locally; no remote font service is needed.
+
 `src/app` holds routes and the global theme. `src/features/calendar` owns calendar interactions, `src/features/events` owns the form and sample data, `src/features/taxonomy` owns management dialogs, `src/features/workspace` owns validated local storage and atomic domain changes, and `src/lib/dates` centralizes date-only rules. Service integrations will be added in separate adapters rather than inside calendar components. See `plan.md` for the complete project plan.
 
 ## Brand asset
 
-The Slidely wordmark in `public/brand/slidely-wordmark.png` was retrieved from https://slidely.ai/landing-page/hero/image-wordmark-slidely-brand.png for this Slidely-owned internal app. Do not repurpose the asset for unrelated projects. The UI uses a system font fallback; exact brand font/color approval remains pending.
+The Slidely wordmark in `public/brand/slidely-wordmark.png` and app icon from https://slidely.ai/slidelylogo.png are used for this Slidely-owned internal app. Do not repurpose these assets for unrelated projects. UI colors are sourced from Slidely's verified website tokens. Typography uses locally hosted Inter with a system fallback and the documented caption/body/section/heading scale.

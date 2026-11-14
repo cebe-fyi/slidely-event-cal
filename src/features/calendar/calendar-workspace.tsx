@@ -1,5 +1,7 @@
 "use client";
 
+import { icons } from "@/design/system";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useSyncExternalStore, type CSSProperties } from "react";
@@ -237,7 +239,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
               aria-label="Local workspace information"
               title="Local sample workspace · Setup information"
             >
-              <UserRound size={18} />
+              <UserRound size={icons.control} />
             </Link>
           </div>
           <div className="year-selector">
@@ -249,7 +251,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 setSelectedDay(null);
               }}
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={icons.control} />
             </button>
             <button
               className="year-label"
@@ -259,7 +261,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
               }}
             >
               {year}
-              <ChevronsUpDown size={12} />
+              <ChevronsUpDown size={icons.inline} />
             </button>
             <button
               className="icon-button"
@@ -269,7 +271,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 setSelectedDay(null);
               }}
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={icons.control} />
             </button>
           </div>
           <div className="month-picker">
@@ -307,8 +309,8 @@ export function CalendarWorkspace({ today }: { today: string }) {
               setSelectedDay(null);
             }}
           >
-            <CalendarDays size={15} /> View all of {year}
-            <ChevronRight size={14} />
+            <CalendarDays size={icons.control} /> View all of {year}
+            <ChevronRight size={icons.control} />
           </button>
           <div className="filter-section">
             <div className="section-label">
@@ -318,7 +320,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 aria-label="Manage categories"
                 onClick={() => setManaging("categories")}
               >
-                <Settings2 size={14} />
+                <Settings2 size={icons.control} />
               </button>
               {categories.length > 0 && (
                 <button
@@ -355,7 +357,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 aria-label="Manage tags"
                 onClick={() => setManaging("tags")}
               >
-                <Settings2 size={14} />
+                <Settings2 size={icons.control} />
               </button>
               {tags.length > 0 && (
                 <button className="text-button" onClick={() => setTags([])}>
@@ -378,12 +380,12 @@ export function CalendarWorkspace({ today }: { today: string }) {
             ))}
           </div>
           <button className="trash-link" onClick={() => setManaging("trash")}>
-            <Trash2 size={15} />
+            <Trash2 size={icons.control} />
             Trash <span>{data.trash.length}</span>
           </button>
           <div className="sidebar-note">
             <span className="note-icon">
-              <Sparkles size={17} />
+              <Sparkles size={icons.control} />
             </span>
             <strong>One link. All the details.</strong>
             <p>AI-assisted event entry is coming when Gemini is connected.</p>
@@ -406,7 +408,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 setSelectedDay(null);
               }}
             >
-              <House size={20} />
+              <House size={icons.navigation} />
             </button>
             <h2>{periodLabel}</h2>
             <div className="period-arrows">
@@ -417,7 +419,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 }
                 onClick={() => move(-1)}
               >
-                <ChevronLeft size={17} />
+                <ChevronLeft size={icons.control} />
               </button>
               <button
                 className="icon-button"
@@ -426,7 +428,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 }
                 onClick={() => move(1)}
               >
-                <ChevronRight size={17} />
+                <ChevronRight size={icons.control} />
               </button>
             </div>
             <button
@@ -462,7 +464,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
               Year
             </button>
             <button disabled title="Available after map setup">
-              <MapPin size={13} />
+              <MapPin size={icons.inline} />
               Map
             </button>
           </div>
@@ -472,7 +474,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
               aria-label="Expand event list"
               onClick={toggleRight}
             >
-              <PanelRightOpen size={18} />
+              <PanelRightOpen size={icons.control} />
             </button>
           )}
           <button
@@ -480,7 +482,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
             onClick={() => setEditing(null)}
             aria-label="Add event"
           >
-            <Plus size={16} />
+            <Plus size={icons.control} />
             <span>Add event</span>
           </button>
         </header>
@@ -492,7 +494,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
           <h1 className="sr-only">Events and conferences</h1>
           <div className="search-toolbar">
             <label className="search-field">
-              <Search size={16} />
+              <Search size={icons.control} />
               <input
                 type="search"
                 aria-label="Search events"
@@ -507,7 +509,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
             </span>
             {activeCount > 0 && (
               <button className="filter-clear" onClick={clearFilters}>
-                Clear {activeCount} filters <X size={12} />
+                Clear {activeCount} filters <X size={icons.inline} />
               </button>
             )}
           </div>
@@ -516,14 +518,14 @@ export function CalendarWorkspace({ today }: { today: string }) {
               className={!mobileList ? "active" : ""}
               onClick={() => setMobileList(false)}
             >
-              <CalendarDays size={15} />
+              <CalendarDays size={icons.control} />
               Calendar
             </button>
             <button
               className={mobileList ? "active" : ""}
               onClick={() => setMobileList(true)}
             >
-              <List size={15} />
+              <List size={icons.control} />
               Event list
             </button>
           </div>
@@ -615,7 +617,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                       className={`year-month-name ${index === todayMonth - 1 && year === todayYear ? "current" : ""}`}
                     >
                       {name}
-                      <ChevronRight size={14} />
+                      <ChevronRight size={icons.control} />
                     </span>
                     <span className="mini-weekdays">
                       {WEEKDAYS.map((d) => (
@@ -692,7 +694,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
               aria-label="Collapse event list"
               onClick={toggleRight}
             >
-              <PanelRightClose size={17} />
+              <PanelRightClose size={icons.control} />
             </button>
           </div>
           <div className="list-subheading">
@@ -704,7 +706,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
               className="back-to-period"
               onClick={() => setSelectedDay(null)}
             >
-              <ChevronLeft size={13} />
+              <ChevronLeft size={icons.inline} />
               All events in {MONTHS[month]}
             </button>
           )}
@@ -730,15 +732,15 @@ export function CalendarWorkspace({ today }: { today: string }) {
                     >
                       <span className="event-category">
                         {c.name}
-                        <ArrowUpRight size={13} />
+                        <ArrowUpRight size={icons.inline} />
                       </span>
                       <strong>{event.title}</strong>
                       <span className="event-meta">
-                        <CalendarDays size={13} />
+                        <CalendarDays size={icons.inline} />
                         {dateRange(event.startDate, event.endDate)}
                       </span>
                       <span className="event-meta">
-                        <MapPin size={13} />
+                        <MapPin size={icons.inline} />
                         {event.location || "Location to confirm"}
                       </span>
                       {event.tagIds.length > 0 && (
@@ -762,7 +764,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
               })
             ) : (
               <div className="empty-state">
-                <CalendarDays size={28} />
+                <CalendarDays size={icons.illustration} />
                 <h3>A little room to explore</h3>
                 <p>
                   No events match this selection. Try another month or clear
@@ -777,7 +779,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
                   className="text-button"
                   onClick={() => setEditing(null)}
                 >
-                  Add an event <Plus size={14} />
+                  Add an event <Plus size={icons.control} />
                 </button>
               </div>
             )}
@@ -795,7 +797,7 @@ export function CalendarWorkspace({ today }: { today: string }) {
             aria-label="Dismiss notification"
             onClick={() => setNotice("")}
           >
-            <X size={15} />
+            <X size={icons.control} />
           </button>
         </div>
       )}

@@ -1,5 +1,7 @@
 "use client";
 
+import { brandPalette, icons } from "@/design/system";
+
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Merge, Pencil, Plus, RotateCcw, Trash2, X } from "lucide-react";
 import {
@@ -119,7 +121,7 @@ export function TaxonomyDialog({
             onClick={onClose}
             aria-label="Close calendar settings"
           >
-            <X size={20} />
+            <X size={icons.navigation} />
           </button>
         </div>
         <div className="manage-tabs" aria-label="Calendar settings section">
@@ -180,7 +182,7 @@ export function TaxonomyDialog({
                     }}
                     aria-label={`Restore ${event.title}`}
                   >
-                    <RotateCcw size={14} />
+                    <RotateCcw size={icons.control} />
                     Restore
                   </button>
                 </div>
@@ -215,7 +217,7 @@ export function TaxonomyDialog({
                           setMessage("");
                         }}
                       >
-                        <Pencil size={15} />
+                        <Pencil size={icons.control} />
                       </button>
                       <button
                         className="icon-button"
@@ -228,7 +230,7 @@ export function TaxonomyDialog({
                           setMessage("");
                         }}
                       >
-                        <Merge size={15} />
+                        <Merge size={icons.control} />
                       </button>
                       <button
                         className="icon-button"
@@ -240,7 +242,7 @@ export function TaxonomyDialog({
                           setMessage("");
                         }}
                       >
-                        <Trash2 size={15} />
+                        <Trash2 size={icons.control} />
                       </button>
                     </div>
                   ))
@@ -254,11 +256,11 @@ export function TaxonomyDialog({
               <button
                 className="secondary-button new-vocabulary"
                 onClick={() => {
-                  setEditor({ id: "", name: "", color: "#4f59c7" });
+                  setEditor({ id: "", name: "", color: brandPalette[0].color });
                   setMessage("");
                 }}
               >
-                <Plus size={15} />
+                <Plus size={icons.control} />
                 New {singular(tab)}
               </button>
             )}
@@ -290,12 +292,17 @@ export function TaxonomyDialog({
                   </label>
                   <label htmlFor="vocabulary-color">
                     Color
-                    <input
+                    <select
                       id="vocabulary-color"
                       name="color"
-                      type="color"
                       defaultValue={editor.color}
-                    />
+                    >
+                      {brandPalette.map((color) => (
+                        <option key={color.id} value={color.color}>
+                          {color.name}
+                        </option>
+                      ))}
+                    </select>
                   </label>
                 </div>
                 <div className="dialog-actions">

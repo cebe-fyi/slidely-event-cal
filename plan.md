@@ -30,7 +30,7 @@ The four attached screenshots are visual references, not instructions. Borrow th
 - First admin is confirmed as `cebe@slidely.ai`. Bootstrap that exact verified account through a controlled setup step; users cannot appoint themselves.
 - Should all members manage categories/tags, or keep the proposed admin-only management?
 - Confirm the twelve-month left navigator interpretation and Monday week start during UI review.
-- Confirm the exact Slidely logo, fonts, and color tokens after visual inspection of the website or a brand screenshot.
+- Current design direction is confirmed: Slidely's verified palette, locally hosted Inter, and a restrained Notion/shadcn-inspired hierarchy. See `docs/design-system.md`; future visual adjustments should use the central tokens and roles.
 - Choose company-owned service accounts, desired hosting/data region, budget, and optional app domain (for example, `events.slidely.ai`).
 - Confirm SMTP sender/provider and map provider before enabling those services.
 
@@ -145,24 +145,23 @@ First release includes every requested core capability across the milestones bel
 
 ## 3. Design direction and branding
 
-Reviewed the content of [Slidely's website](https://slidely.ai/). Exact visual tokens and downloadable logo assets still require CSS/visual verification; website text is not sufficient evidence for exact colors or fonts.
+Verified Slidely's actual rendered CSS tokens and official logo assets on [Slidely's website](https://slidely.ai/). Use only its named brand/context/mono color families, including the restricted category/tag palette. All editable values live in `src/design/tokens.json`, with CSS generated from it; do not scatter raw colors, icon sizes, or typography declarations in feature code.
 
-Use the screenshots' calm, dense calendar workspace: spacious header, quiet grid, restrained rounded corners, readable event labels, and chronological list with category accents. The calendar is the main content; avoid a marketing hero or decorative background inside the working app.
+Use the screenshots' calm, dense calendar workspace, with Notion/shadcn-inspired restraint: compact toolbar, quiet grid, consistent rounded corners, readable event labels, and chronological list with category accents. The calendar is the main content; avoid a marketing hero or decorative background inside the working app.
 
-Provisional neutral tokens: canvas `#F7F8FA`, surface `#FFFFFF`, primary text `#17212B`, muted text `#52606D`, borders `#DCE2E8`. These are proposed UI neutrals, not claimed Slidely brand values. Brand accent and font remain pending verification. Put all tokens in one theme file so correcting them is inexpensive.
+The previous provisional palette is superseded by the verified Slidely tokens. `src/design/typography.css` assigns semantic roles, `src/design/components.css` owns shared recipes and responsive geometry, and `src/design/system.ts` exposes palette/icon values to feature code. `npm run design:check` and CI enforce this organization. Read `docs/design-system.md` for usage rules and rationale.
 
-Use the verified brand font if its license supports app use; otherwise choose a readable system sans-serif until confirmed. Use tabular numerals for date controls and consistent sentence-case actions: Add event, Review details, Save event, Merge categories.
+Use locally hosted Inter with only four sizes: 12px supporting metadata/dense labels, 14px everyday reading/actions, 16px section titles, and 20px dialog/page headings. Weights are limited to 400/500/600, with regular content, medium controls, and semibold hierarchy. Keep this scale on phones; wrap or reflow instead of inventing smaller type. Use tabular numerals for dates/counts and sentence-case actions.
 
 Desktop concept:
 
 ```text
-Slidely Events | Period controls | Month / Year / Map | Search | Add event
---------------+--------------------------------------+------------------
-Year + months |                                      | Events in period
-Category dots |         Calendar / map               | Date heading
-Categories    |                                      | Event + location
+Slidely logo  | Home / Period / Month / Year / Map           Add event
+Year + months | Search                               | Events in period
+Category dots |                                      | Date heading
+Categories    |         Calendar / map               | Event + location
 Tags          |                                      | Category + tags
-Collapse      |                                      | Collapse
+Fixed rail    |                                      | Collapse
 ```
 
 Review the first prototype with real-length event names, a busy month, a multi-day conference, an empty year, missing locations, and a phone layout before connecting production data.
@@ -240,7 +239,10 @@ src/lib/ai/                          Gemini adapter, prompt, output schema
 src/lib/maps/                        Provider adapter and geocoding
 src/lib/dates/                       Shared date-only and overlap helpers
 src/lib/observability/               Request IDs and sanitized logging
-src/styles/                          Global styles and brand tokens
+src/design/                          Single-source tokens, typography roles, shared recipes
+docs/design-system.md                Typography/palette rationale and usage rules
+scripts/generate-theme.mjs           Generates CSS from the central design tokens
+scripts/check-design.mjs             Guards against scattered visual definitions
 supabase/migrations/                 Versioned SQL, indexes, RLS, functions
 supabase/tests/                      Authorization and transaction checks
 tests/e2e/                           Critical browser journeys
@@ -366,9 +368,9 @@ Checkpoint: production passes the launch checklist, and the team knows the URL a
 ## 6. Milestones and current status
 
 - [x] P0: Capture scope, proposed data model, UX behavior, setup sequence, and reference skills in this file.
-- [x] P0: Inspect website content and screenshot references; identify exact brand-token verification as outstanding.
+- [x] P0: Inspect website content and screenshot references; verify actual brand CSS tokens and assets during the design-system refinement.
 - [x] P0: Install and read Vercel React best practices, Vercel web design guidelines, Supabase Postgres best practices, and Anthropic frontend design skills.
-- [x] P1: Next.js scaffold and mock-data desktop/mobile prototype with month/year/list/panels, search, filters, and sample event editing. Official wordmark retrieved and black/white site treatment visually checked; exact font/accent approval remains pending. Desktop and 390px phone interaction checks passed.
+- [x] P1: Next.js scaffold and mock-data desktop/mobile prototype with month/year/list/panels, search, filters, and sample event editing. Official wordmark and live brand tokens verified. Central Slidely palette and Inter typography system implemented. Desktop and phone interaction checks passed.
 - [ ] P2: Development Supabase, migrations, domain-restricted OTP, session persistence, membership and RLS tests.
 - [ ] P3: Persistent event CRUD, search/filters, concurrency handling, categories/tags including atomic merge/delete, audit/trash.
   - Local prototype subset: events/categories/tags persist in this browser, vocabulary create/edit/recolor/merge/delete is implemented, and trash/restore is available. Shared persistence, server authorization, audit history, and multi-user conflict handling are still pending; this does not complete P3.
@@ -456,3 +458,4 @@ Supporting official documentation (checked during planning; recheck when impleme
 - 2026-11-14: Verified category create/rename/duplicate rejection, impact preview and merge reassignment, local event save across reload, tag create/delete, trash/restore, and mobile management layout at 390px. Native dialog keyboard handling remains intact and browser error logs are empty. Production build, strict TypeScript, lint, and all 10 tests pass. Saved local screenshot in ignored `artifacts/calendar-local.jpg`. No push or deployment performed.
 - 2026-11-14: User requested layout-only refinement while keeping local sample data: removed global navbar and preview banner, moved Slidely identity into the permanent full-height left sidebar, consolidated calendar controls into a compact toolbar, removed introductory heading and all left-collapse controls/state, retained right-panel collapse/reopen, and applied thin scrollbars throughout. Updated the responsive layout to retain a narrow permanent left rail. No service integrations, uploads, or sample-data changes included.
 - 2026-11-14: Layout verified in-browser at desktop and 360/390px phone widths: left sidebar bounds start at y=0 and fill the viewport, no left-collapse controls exist, right collapse/reopen preserves the left rail, mobile list remains usable with a saved desktop right-collapse preference, and no horizontal overflow or browser errors were observed. TypeScript, lint, and production build pass. Preview screenshot: ignored `artifacts/calendar-layout.jpg`.
+- 2026-11-14: Centralized all editable design values in `src/design/tokens.json`, generated CSS variables, semantic typography role assignments, shared component recipes, and TypeScript palette/icon accessors. Verified Slidely's named palette against live site CSS. Replaced arbitrary color selection with six Slidely options; legacy sample colors migrate while retaining names, IDs, dates, event associations, and trash. Added locally hosted Inter and its font license; type scale is limited to 12/14/16/20px with 400/500/600 weights. Added `docs/design-system.md`, a generation consistency check, and CI checks that reject scattered raw color/type/icon definitions. The app icon now uses Slidely's official logo mark. Eleven domain tests pass, including legacy-data preservation. Browser checks confirmed Inter loaded, intended type sizes, palette-only options, and no sidebar/dialog horizontal overflow at 390px. Local work only; no upload or deployment.

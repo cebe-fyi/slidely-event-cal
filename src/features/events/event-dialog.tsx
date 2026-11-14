@@ -1,5 +1,7 @@
 "use client";
 
+import { icons } from "@/design/system";
+
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CalendarDays, MapPin, X } from "lucide-react";
 import type { Category, Tag, TeamEvent } from "./types";
@@ -89,7 +91,7 @@ export function EventDialog({
             onClick={onClose}
             aria-label="Close event form"
           >
-            <X size={20} />
+            <X size={icons.navigation} />
           </button>
         </div>
         <p className="form-notice">
@@ -110,7 +112,7 @@ export function EventDialog({
         <div className="form-row">
           <label>
             <span>
-              <CalendarDays size={14} /> Start date
+              <CalendarDays size={icons.control} /> Start date
             </span>
             <input
               type="date"
@@ -135,7 +137,7 @@ export function EventDialog({
         </div>
         <label>
           <span>
-            <MapPin size={14} /> Location
+            <MapPin size={icons.control} /> Location
           </span>
           <input
             name="location"

@@ -1,0 +1,147 @@
+/* Role assignments live here. Sizes, weights, tracking and leading live in tokens.json.
+   Never shrink type at a breakpoint: change layout or truncate the content instead. */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+  font-optical-sizing: auto;
+}
+h1 {
+  font-size: var(--text-heading);
+}
+h2 {
+  font-size: var(--text-section);
+}
+h3 {
+  font-size: var(--text-body);
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+h1,
+h2,
+h3,
+strong,
+legend {
+  font-weight: var(--weight-semibold);
+}
+
+/* Primary reading and interaction: readable 14px, with medium weight for controls. */
+.filter-option,
+.month-picker > button,
+.primary-button,
+.secondary-button,
+.today-button,
+.view-control button,
+.search-field input,
+.event-card strong,
+.event-dialog label,
+.event-dialog legend,
+.form-tags label,
+.trash-link,
+.manage-tabs button,
+.manage-row strong,
+.manage-empty,
+.form-error,
+.toast,
+.manage-description,
+.manage-success,
+.vocabulary-confirm p,
+.setup-page p,
+.setup-page ol {
+  font-size: var(--text-body);
+}
+.primary-button,
+.secondary-button,
+.today-button,
+.view-control button,
+.month-picker > button,
+.section-label h2,
+.event-card strong,
+.event-dialog label,
+.event-dialog legend,
+.manage-tabs button,
+.manage-row strong,
+.mobile-view-switch button {
+  font-weight: var(--weight-medium);
+}
+
+/* Supporting information and dense calendar labels: 12px; never 8–11px. */
+.text-button,
+.all-year,
+.filter-count,
+.sidebar-note,
+.sidebar-note strong,
+.sidebar-note p,
+.sidebar-footer,
+.results-count,
+.filter-clear,
+.weekdays,
+.day-number,
+.calendar-event,
+.overflow-events,
+.calendar-footer,
+.list-subheading,
+.count-pill,
+.back-to-period,
+.list-date-heading,
+.list-date-heading > span,
+.event-category,
+.event-meta,
+.event-tags,
+.event-tags > span,
+.list-footer,
+.mini-weekdays,
+.mini-grid,
+.small-muted,
+.form-notice,
+.manage-row div > span,
+.manage-footer,
+.empty-state p,
+.setup-page > a,
+.setup-page code,
+.mobile-view-switch button {
+  font-size: var(--text-caption);
+}
+.day-number,
+.year-label,
+.period-navigation h2,
+.mini-grid,
+.count-pill {
+  font-variant-numeric: tabular-nums;
+}
+.section-label h2 {
+  font-size: var(--text-body);
+}
+
+/* Local section hierarchy: 16px, semibold. Event names remain at body size. */
+.panel-title,
+.year-label,
+.period-navigation h2,
+.year-month-name,
+.empty-state h3,
+.vocabulary-editor h3,
+.vocabulary-confirm h3,
+.setup-page h2 {
+  font-size: var(--text-section);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-heading);
+}
+
+/* Highest local hierarchy only: dialog and standalone page headings, 20px. */
+.dialog-header h2,
+.setup-page h1 {
+  font-size: var(--text-heading);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+}
+.month-picker > .selected,
+.day-number.is-today {
+  font-weight: var(--weight-semibold);
+}

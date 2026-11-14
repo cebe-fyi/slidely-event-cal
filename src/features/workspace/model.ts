@@ -1,5 +1,6 @@
 import { isValidDate } from "../../lib/dates/calendar";
 import type { Category, Tag, TeamEvent } from "../events/types";
+import { normalizePaletteColor, paletteColor } from "../../design/system";
 
 export type WorkspaceData = {
   version: 1;
@@ -38,6 +39,8 @@ export function saveVocabulary(
     throw new Error("Uncategorized is reserved for events without a category.");
   if (!/^#[0-9a-f]{6}$/i.test(color))
     throw new Error("Choose a valid six-digit color.");
+  const preset = paletteColor(color);
+  if (!preset) throw new Error("Choose a color from the Slidely palette.");
   if (
     data[kind].some(
       (item) => item.id !== id && normalized(item.name) === normalized(name),
@@ -50,7 +53,7 @@ export function saveVocabulary(
     id,
     name,
     color,
-    ...(kind === "categories" ? { background: `${color}15` } : {}),
+    ...(kind === "categories" ? { background: preset.background } : {}),
   };
   const items = data[kind].some((item) => item.id === id)
     ? data[kind].map((existing) => (existing.id === id ? item : existing))
@@ -217,5 +220,18 @@ export function parseWorkspace(serialized: string): WorkspaceData {
     );
   if (!hasUniqueIds(allEvents))
     throw new Error("Saved events must have unique IDs.");
-  return value as WorkspaceData;
+  const data = value as WorkspaceData;
+  // Existing saved previews may use the old arbitrary palette. Upgrade colors only,
+  // without discarding event data, user-defined names, IDs, links, or trash records.
+  return {
+    ...data,
+    categories: data.categories.map((item, index) => {
+      const preset = normalizePaletteColor(item.color, index);
+      return { ...item, color: preset.color, background: preset.background };
+    }),
+    tags: data.tags.map((item, index) => ({
+      ...item,
+      color: normalizePaletteColor(item.color, index).color,
+    })),
+  };
 }

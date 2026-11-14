@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { brandPalette } from "../src/design/system";
 import {
   parseWorkspace,
   removeVocabulary,
@@ -13,17 +14,22 @@ function fixture(): WorkspaceData {
   return {
     version: 1,
     categories: [
-      { id: "a", name: "SaaS", color: "#112233", background: "#11223315" },
+      {
+        id: "a",
+        name: "SaaS",
+        color: brandPalette[0].color,
+        background: brandPalette[0].background,
+      },
       {
         id: "b",
         name: "Enterprise",
-        color: "#334455",
-        background: "#33445515",
+        color: brandPalette[3].color,
+        background: brandPalette[3].background,
       },
     ],
     tags: [
-      { id: "x", name: "Networking", color: "#aabbcc" },
-      { id: "y", name: "Speaking", color: "#123456" },
+      { id: "x", name: "Networking", color: brandPalette[0].color },
+      { id: "y", name: "Speaking", color: brandPalette[1].color },
     ],
     events: [
       {
@@ -84,22 +90,60 @@ test("vocabulary names are trimmed, unique ignoring case, and colors validated",
     "categories",
     "new",
     "  Healthcare  ",
-    "#aabbcc",
+    brandPalette[0].color,
   );
   assert.equal(result.categories[2].name, "Healthcare");
   assert.throws(() =>
-    saveVocabulary(result, "categories", "other", "healthcare", "#aabbcc"),
+    saveVocabulary(
+      result,
+      "categories",
+      "other",
+      "healthcare",
+      brandPalette[0].color,
+    ),
   );
   assert.throws(() =>
-    saveVocabulary(result, "categories", "other", "Uncategorized", "#aabbcc"),
+    saveVocabulary(
+      result,
+      "categories",
+      "other",
+      "Uncategorized",
+      brandPalette[0].color,
+    ),
   );
   assert.throws(() =>
     saveVocabulary(result, "tags", "other", "Good name", "red"),
   );
   assert.equal(
-    saveVocabulary(result, "categories", "new", "Healthcare AI", "#223344")
-      .categories.length,
+    saveVocabulary(
+      result,
+      "categories",
+      "new",
+      "Healthcare AI",
+      brandPalette[1].color,
+    ).categories.length,
     3,
+  );
+});
+
+test("legacy saved colors migrate to the Slidely palette without losing records or associations", () => {
+  const data = fixture();
+  data.categories[0].color = "#112233";
+  data.categories[0].background = "#11223315";
+  data.tags[0].color = "#aabbcc";
+  data.trash = [{ ...data.events[0], id: "deleted" }];
+  const migrated = parseWorkspace(JSON.stringify(data));
+  assert.equal(migrated.categories[0].color, brandPalette[0].color);
+  assert.equal(migrated.tags[0].color, brandPalette[0].color);
+  assert.deepEqual(migrated.events, data.events);
+  assert.deepEqual(migrated.trash, data.trash);
+  assert.deepEqual(
+    migrated.categories.map((c) => [c.id, c.name]),
+    data.categories.map((c) => [c.id, c.name]),
+  );
+  assert.throws(
+    () => saveVocabulary(migrated, "tags", "off-brand", "Off brand", "#123456"),
+    /Slidely palette/,
   );
 });
 test("trash and restore round trip event associations even after vocabulary merge", () => {
