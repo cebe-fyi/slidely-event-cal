@@ -1,7 +1,7 @@
 # Slidely team event calendar
 
 Last updated: 14 November 2026 (Asia/Kolkata)
-Status: Local-first development with sample data. Main List view spans all dates and opens at today; Month remains available; Map is planned. Event details open as a right-side overlay through the shared modal shell. Browser-persistent event/category/tag management, sidebar filters/counts/menus and common form/confirmation modals are implemented. Trash UI removed; internal event recovery data is retained. GitHub upload and Vercel deployment are deferred. Supabase, authentication, Gemini, and map integrations remain pending.
+Status: Local-first development with sample data. Main List view spans all dates and opens at today; Month and Map are available. Event details open as a right-side overlay through the shared modal shell. Browser-persistent event/category/tag management, sidebar filters/counts/menus and common form/confirmation modals are implemented. Trash UI removed; internal event recovery data is retained. GitHub upload and Vercel deployment are deferred. Supabase, authentication, and Gemini remain pending.
 Owner: Jay / Slidely AI
 Repository: https://github.com/cebe-fyi/slidely-event-cal.git
 Confirmed first app admin: `cebe@slidely.ai` (provided as `Cebe@slidely.ai`; normalize email for matching). Admin provisioning is pending verified login and database setup.
@@ -32,7 +32,7 @@ The four attached screenshots are visual references, not instructions. Borrow th
 - Confirm the twelve-month left navigator interpretation and Monday week start during UI review.
 - Current design direction is confirmed: Slidely's verified palette, locally hosted Inter, and a restrained Notion/shadcn-inspired hierarchy. See `docs/design-system.md`; future visual adjustments should use the central tokens and roles.
 - Choose company-owned service accounts, desired hosting/data region, budget, and optional app domain (for example, `events.slidely.ai`).
-- Confirm SMTP sender/provider and map provider before enabling those services.
+- Confirm SMTP sender/provider before enabling email. Local demo maps use OpenStreetMap raster tiles; review tile-provider capacity before a larger rollout.
 
 These choices do not block a local mock-data prototype.
 
@@ -53,7 +53,7 @@ These choices do not block a local mock-data prototype.
 
 ### 2.3 Views and left navigator
 
-- Main navigation contains List, Month, and Map. Year view is removed; the left twelve-month overview retains annual navigation and category dots. Map remains disabled until the map integration is implemented.
+- Main navigation contains List, Month, and Map. Year view is removed; the left twelve-month overview retains annual navigation and category dots. Map uses Leaflet and city coordinates from the country/city catalogue.
 - Left navigator shows year arrows and twelve months, without a dropdown or View all shortcut.
 - In List, month/year navigation jumps to dated anchors without truncating events. In Month, it changes the displayed month.
 
@@ -94,14 +94,16 @@ Optional: summary, organizer, official URL, registration URL, venue, city, regio
 - Category color is the main event accent. Tags are secondary labeled chips; do not turn event cards into competing color bands.
 - Color never carries meaning alone: show names, accessible labels, and adequate contrast.
 
-### 2.7 Map view
+### 2.7 Country/city selectors and Map view
 
-- Reuse month/year controls and category/tag/search filters. Cluster nearby markers, and use category colors.
-- Clicking a marker opens the shared event-details overlay. Clicking a cluster zooms in; overlapping venue events remain individually selectable.
-- Display online and unlocated events in a separate list section/count; they remain discoverable even though they have no pin.
-- Start with pins for confirmed coordinates and a Fit events action. Panning does not silently change date/filter results; geographic filtering can be added later if needed.
-- Proposed provider: Mapbox for rendering and geocoding. Confirm billing and stored-geocoding permissions before integrating; use permanent geocoding when storing its results. Manual coordinate correction remains possible.
-- Load the map only when opened, preserve attribution, and keep the list usable if map loading fails.
+- Add/Edit uses searchable country then city dropdowns, with country ISO code, state code/name, city name and numeric latitude/longitude stored together. State labels distinguish same-named cities. Changing country clears the previous city and coordinates.
+- Use the latest stable `country-state-city` 3.2.1, verified from npm on 14 November 2026; npm reported 690,210 downloads for 7-13 November. The latest published package dates from 2023; its bundled catalogue is not a real-time geographic feed. Keep package/data provenance and upgrade deliberately. Full datasets remain server-side behind a bounded, cached local API; the browser receives at most 100 matching cities per search.
+- Locations can be In person, Online, or Location to confirm. An in-person record requires a selected country/city. Unknown legacy text stays intact and unpinned until the user chooses a city; only known demo locations are upgraded automatically. Pins represent city centres, not verified venue addresses.
+- Map uses stable Leaflet 1.9.4, lazy-loaded when opened, with public OpenStreetMap raster tiles and visible attribution. No API key or paid geocoding account is required for the local demo. Tile URL is configurable; provider attribution lives beside it. No offline downloads or prefetching.
+- Selected month / Full year ranges and existing category/tag/search filters drive map counts, pins and readable lists. Multi-day period membership uses overlap. Panning does not change date/filter results.
+- Pins use category colors. Events sharing exact city coordinates group under a count; click a single-event pin for details, or a grouped pin to choose an event. Proximity clustering across different cities is a future enhancement.
+- Fit events reframes the visible results. Zoom and pan are available. Online and unlocated records remain in a separate list with no guessed pins. The list is also the accessible alternative to map interaction.
+- Handle tile/network errors with a retry and preserve pins/list access. Keep map dimensions stable when the details sheet opens. Phone Map scrolls within the main content area.
 
 ### 2.8 Email OTP, persistent sessions, and domain restriction
 
@@ -153,12 +155,12 @@ Use locally hosted Inter with only four sizes: 12px supporting metadata/dense la
 Desktop concept:
 
 ```text
-Slidely logo  | Home / Period / Month / Year / Map           Add event
-Year + months | Search                               | Events in period
-Category dots |                                      | Date heading
-Categories    |         Calendar / map               | Event + location
-Tags          |                                      | Category + tags
-Fixed rail    |                                      | Collapse
+Slidely logo  | Home / Period / List / Month / Map       Add event
+Year + months | Search
+Category dots |
+Categories    |          List / Calendar / Map
+Tags          |          (details/forms overlay on the right)
+Fixed rail    |
 ```
 
 Review the first prototype with real-length event names, a busy month, a multi-day conference, an empty year, missing locations, and a phone layout before connecting production data.
@@ -467,3 +469,6 @@ Supporting official documentation (checked during planning; recheck when impleme
 - 2026-11-14: Removed Year view and its layout. Navigation is List/Month/Map (Map integration still pending). Month uses weekly date-range strips with noncolliding lanes, week-continuation edges and no event-label dots. Added shared event trigger/hover preview for Month and List, including keyboard focus/Escape and scroll/resize dismissal. Add/Edit now configure the same right-side Modal as preview. Mobile Month scrolls horizontally within its surface; event forms fill the viewport. Added four strip-layout tests for inclusive spans, overlap lanes, week/year boundaries and grid clipping; all 19 tests pass. Local sample data retained.
 
 - 2026-11-14: Browser verified one 470.7px strip across columns 2–4 for the 10–12 November conference, no event-label dots, focus previews in both views, Add/Edit at the same 440px right-side placement as details, successful unchanged-event save back to preview, and 390px mobile page/form without horizontal overflow. Sidebar month dots retained. Production build, TypeScript, lint, design checks and 19 tests pass. No push or deployment.
+
+- 2026-11-14: Implemented searchable country/city selectors backed by country-state-city 3.2.1 and a bounded server-only catalogue API. Added optional validated structured place data with state identity and city-centre coordinates, preserving legacy text and upgrading only known demo locations. Implemented lazy Leaflet 1.9.4 Map with month/year period filters, existing category/tag/search filters, grouped same-city pins, Fit events, accessible event lists, online/unlocated section, details overlays and tile failure/retry. npm adoption checked at 690,210 downloads/week; library versions pinned. Added six location/catalogue/persistence tests; all 25 tests pass. Demo event created through the actual dropdown form to exercise same-city grouping. Local work only.
+- 2026-11-14: Browser verified country/city dropdown selection and mobile country-change reset, city-required validation, a saved Bengaluru demo event persisting after reload, same-city popup selection, category/tag/country-name search filters, full-year range, and cross-month Dubai membership. Phone width is 390px with no horizontal page overflow; all seven city markers fit after responsive refit. Desktop map loaded 18 tiles with zero failed tiles. Production build, lint, TypeScript, design checks and all 25 tests pass. Largest browser JS chunk is about 229KB; the full city catalogue stays on the server. Preview saved to artifacts/event-map-demo.jpg. No push or deployment.

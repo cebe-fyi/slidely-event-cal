@@ -68,3 +68,7 @@ Visual direction is inspired by Notion's restrained hierarchy and shadcn's share
 Month uses a weekly seven-column grid with a separate strip layer. Grid spans and lane numbers are runtime geometry; event height, header space, mobile minimum width and hover-card width/height are central layout tokens. Multi-day strips join dates within a week, with explicit continuation edges across rows. Labels have no dot. Overlap lanes grow the week rather than hiding records.
 
 EventButton owns a shared hover/focus preview for agenda and Month. Hover waits briefly, focus opens it directly, Escape dismisses, and scroll/resize closes stale positions. Previews use 12px supporting text and 14px semibold titles. Touch opens details by tapping. Add/Edit configure Modal with right placement, using the same width, header, focus and dismissal behavior as event preview; form actions stay visible in a sticky footer.
+
+## Location selectors and Map
+
+Searchable Country/City fields use the shared Combobox recipe, with keyboard selection, loading/error feedback and state-qualified city names. Dropdown height and map dimensions/marker size are layout tokens. Map controls retain the existing 12/14/20px roles. Native basemap images come from the tile provider; application pins/chrome use Slidely tokens. Map has its own responsive content surface and opens event details through the existing modal.

@@ -144,3 +144,31 @@ legend {
   font-size: var(--text-body);
   font-weight: var(--weight-semibold);
 }
+
+/* Location selectors and map chrome retain the application's four-size scale. */
+.combo-options,
+.map-popup-events button {
+  font-size: var(--text-body);
+}
+.field-hint,
+.map-summary,
+.map-message,
+.map-period-control,
+.map-index-event > span,
+.leaflet-container,
+.leaflet-control-attribution {
+  font-size: var(--text-caption);
+}
+.leaflet-container {
+  font-family: var(--font-sans);
+  line-height: var(--leading-normal);
+}
+.event-map .leaflet-bar a {
+  font-family: var(--font-sans);
+  font-size: var(--text-heading);
+  font-weight: var(--weight-semibold);
+}
+.map-marker-badge {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+}

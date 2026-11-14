@@ -8,7 +8,8 @@ A Next.js and TypeScript team event calendar. This first deployable milestone us
 - Default List spans past and upcoming dates; Home/Today returns to today. Search and category/tag filters apply across all dates.
 - Permanent left sidebar and full-width main area. Details use a right-side overlay without resizing the layout, with Close, Edit, Escape and backdrop dismissal. All scrollbars stay thin.
 - Shared hover/focus previews in Month and List; event preview, Add and Edit use the same accessible right-side modal shell.
-- Add/edit events, with browser-local storage that survives reloads.
+- Add/edit events, with browser-local storage that survives reloads. Searchable Country/City dropdowns save ISO/state identity and map-ready city-centre coordinates.
+- Map with month/full-year ranges, category/tag/search filters, city-count pins, Fit events, and online/unlocated lists. Runs without an API key using Leaflet and OpenStreetMap tiles.
 - Create/edit/recolor/merge/delete categories and tags, with previews of affected events.
 - Compact, full-width sidebar sections with a 15% wider rail, colored checkbox filters, event counts, and row menus. Use the section + to create an item or its … menu to edit, merge, or delete it.
 - Shared form and confirmation modals for event and vocabulary actions. Event removal keeps internal recovery data; the Trash navigation has been removed from this version.
@@ -16,7 +17,7 @@ A Next.js and TypeScript team event calendar. This first deployable milestone us
 
 ## What comes next
 
-Email OTP and domain restriction, Supabase shared data and admin roles, Gemini enrichment, and map view. No private workspace or login protection is claimed by this local sample-data prototype. Use synthetic information only. GitHub upload and Vercel deployment are deferred at the user's request.
+Email OTP and domain restriction, Supabase shared data and admin roles, Gemini enrichment, and production map-provider capacity planning. No private workspace or login protection is claimed by this local sample-data prototype. Use synthetic information only. GitHub upload and Vercel deployment are deferred at the user's request.
 
 ## Run on this computer
 
@@ -68,3 +69,7 @@ All design tokens and shared style recipes live in `src/design/`. Read `docs/des
 ## Brand asset
 
 The Slidely wordmark in `public/brand/slidely-wordmark.png` and app icon from https://slidely.ai/slidelylogo.png are used for this Slidely-owned internal app. Do not repurpose these assets for unrelated projects. UI colors are sourced from Slidely's verified website tokens. Typography uses locally hosted Inter with a system fallback and the documented caption/body/section/heading scale.
+
+## Location and map implementation
+
+Country/city lookup uses the latest stable `country-state-city` 3.2.1, with the large dataset kept server-side. The local `/api/locations` route returns countries or bounded city search results; no external location API sees form queries. Leaflet 1.9.4 loads only on Map. See [location/map decisions](docs/locations-and-map.md) for sources, versions, data limits and tile configuration.

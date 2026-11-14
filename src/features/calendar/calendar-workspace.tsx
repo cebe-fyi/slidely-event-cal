@@ -2,6 +2,7 @@
 
 import { icons } from "@/design/system";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import {
   ChevronLeft,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import { MONTHS, dateKey, overlaps, periodBounds } from "@/lib/dates/calendar";
 import { type TeamEvent } from "@/features/events/types";
+import { eventMatchesSearch } from "../events/search";
 import { MonthCalendar } from "./month-calendar";
 import { EventAgenda } from "./event-agenda";
 import { EventDetails } from "@/features/events/event-details";
@@ -27,12 +29,21 @@ import { sidebarCounts } from "./filter-counts";
 import { useLocalWorkspace } from "@/features/workspace/use-local-workspace";
 import { trashEvent } from "@/features/workspace/model";
 
-type View = "month" | "list";
+const EventMap = dynamic(() => import("../map/event-map"), {
+  ssr: false,
+  loading: () => (
+    <p className="map-loading" role="status">
+      Loading map…
+    </p>
+  ),
+});
+type View = "month" | "list" | "map";
 
 export function CalendarWorkspace({ today }: { today: string }) {
   const [todayYear, todayMonth] = today.split("-").map(Number);
   const [year, setYear] = useState(todayYear);
   const [month, setMonth] = useState(todayMonth - 1);
+  const [mapPeriod, setMapPeriod] = useState<"month" | "year">("month");
   const [view, setView] = useState<View>("list");
   const {
     workspace: data,
@@ -62,26 +73,36 @@ export function CalendarWorkspace({ today }: { today: string }) {
     (event) =>
       (!categories.length || categories.includes(event.categoryId)) &&
       (!tags.length || event.tagIds.some((tag) => tags.includes(tag))) &&
-      `${event.title} ${event.location} ${event.description}`
-        .toLowerCase()
-        .includes(search.trim().toLowerCase()),
+      eventMatchesSearch(event, search),
   );
   const [start, end] =
-    view === "list" ? ["1900-01-01", "2200-12-31"] : periodBounds(year, month);
+    view === "list"
+      ? ["1900-01-01", "2200-12-31"]
+      : periodBounds(
+          year,
+          view === "map" && mapPeriod === "year" ? undefined : month,
+        );
   const periodEvents = filtered.filter((event) =>
     overlaps(event.startDate, event.endDate, start, end),
   );
   const counts = sidebarCounts(events, start, end, search, categories, tags);
-  const periodLabel = `${MONTHS[month]} ${year}`;
+  const periodLabel =
+    view === "map" && mapPeriod === "year"
+      ? String(year)
+      : `${MONTHS[month]} ${year}`;
   const activeCount = categories.length + tags.length;
 
   function selectMonth(index: number) {
     setMonth(index);
-    if (view !== "list") setView("month");
+    if (view === "map") setMapPeriod("month");
     jumpToDate(dateKey(year, index, 1));
     setSelectedDay(null);
   }
   function move(amount: number) {
+    if (view === "map" && mapPeriod === "year") {
+      setYear((y) => Math.min(2200, Math.max(1900, y + amount)));
+      return;
+    }
     const date = new Date(Date.UTC(year, month + amount, 1));
     if (date.getUTCFullYear() >= 1900 && date.getUTCFullYear() <= 2200) {
       setYear(date.getUTCFullYear());
@@ -197,14 +218,22 @@ export function CalendarWorkspace({ today }: { today: string }) {
             <div className="period-arrows">
               <button
                 className="icon-button"
-                aria-label="Previous month"
+                aria-label={
+                  view === "map" && mapPeriod === "year"
+                    ? "Previous year period"
+                    : "Previous month"
+                }
                 onClick={() => move(-1)}
               >
                 <ChevronLeft size={icons.control} />
               </button>
               <button
                 className="icon-button"
-                aria-label="Next month"
+                aria-label={
+                  view === "map" && mapPeriod === "year"
+                    ? "Next year period"
+                    : "Next month"
+                }
                 onClick={() => move(1)}
               >
                 <ChevronRight size={icons.control} />
@@ -244,7 +273,14 @@ export function CalendarWorkspace({ today }: { today: string }) {
             >
               Month
             </button>
-            <button disabled title="Available after map setup">
+            <button
+              aria-pressed={view === "map"}
+              className={view === "map" ? "active" : ""}
+              onClick={() => {
+                setView("map");
+                setSelectedDay(null);
+              }}
+            >
               <MapPin size={icons.inline} />
               Map
             </button>
@@ -295,6 +331,32 @@ export function CalendarWorkspace({ today }: { today: string }) {
               jump={agendaJump}
               onOpen={(event) => setDetailsId(event.id)}
             />
+          ) : view === "map" ? (
+            <div className="map-view">
+              <div className="map-period-control" aria-label="Map date range">
+                <button
+                  type="button"
+                  className={mapPeriod === "month" ? "active" : ""}
+                  aria-pressed={mapPeriod === "month"}
+                  onClick={() => setMapPeriod("month")}
+                >
+                  Selected month
+                </button>
+                <button
+                  type="button"
+                  className={mapPeriod === "year" ? "active" : ""}
+                  aria-pressed={mapPeriod === "year"}
+                  onClick={() => setMapPeriod("year")}
+                >
+                  Full year
+                </button>
+              </div>
+              <EventMap
+                events={periodEvents}
+                categories={data.categories}
+                onOpen={(event) => setDetailsId(event.id)}
+              />
+            </div>
           ) : (
             <div className="calendar-surface">
               <MonthCalendar

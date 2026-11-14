@@ -1,4 +1,5 @@
 import { brandPalette, uncategorizedStyle } from "../../design/system";
+import type { EventPlace, LocationKind } from "../locations/types";
 
 export type Category = {
   id: string;
@@ -13,6 +14,8 @@ export type TeamEvent = {
   startDate: string;
   endDate: string;
   location: string;
+  locationKind?: LocationKind;
+  place?: EventPlace;
   categoryId: string;
   tagIds: string[];
   description: string;

@@ -15,11 +15,13 @@
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/dates.test.ts tests/workspace.test.ts tests/sidebar-counts.test.ts tests/month-layout.test.ts",
+    "test": "tsx --test tests/dates.test.ts tests/workspace.test.ts tests/sidebar-counts.test.ts tests/month-layout.test.ts tests/locations.test.ts",
     "format": "prettier --write src tests package.json tsconfig.json next.config.ts eslint.config.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
+    "country-state-city": "3.2.1",
+    "leaflet": "1.9.4",
     "lucide-react": "^0.468.0",
     "next": "16.4.6",
     "react": "19.3.1",
@@ -31,6 +33,7 @@
     }
   },
   "devDependencies": {
+    "@types/leaflet": "1.9.22",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

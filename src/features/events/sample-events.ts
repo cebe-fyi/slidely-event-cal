@@ -1,5 +1,6 @@
 import { dateKey, daysInMonth } from "@/lib/dates/calendar";
 import type { TeamEvent } from "./types";
+import { withDemoLocation } from "../locations/event-location";
 
 // Fictional sample events keep the prototype useful without suggesting real schedules.
 export function sampleEvents(year: number, month: number): TeamEvent[] {
@@ -74,5 +75,5 @@ export function sampleEvents(year: number, month: number): TeamEvent[] {
     description: "A fictional multi-day example spanning two months.",
     url: "",
   });
-  return events;
+  return events.map(withDemoLocation);
 }

@@ -107,4 +107,8 @@
   --layout-calendarEventHeight: 26px;
   --layout-calendarDayHeader: 38px;
   --layout-monthMobileMinWidth: 560px;
+  --layout-mapMarkerSize: 30px;
+  --layout-mapHeight: 480px;
+  --layout-mapHeightMobile: 360px;
+  --layout-comboMaxHeight: 240px;
 }

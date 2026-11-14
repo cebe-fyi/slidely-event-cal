@@ -1,3 +1,4 @@
+import { eventMatchesSearch } from "../events/search";
 import type { TeamEvent } from "../events/types";
 import { overlaps } from "../../lib/dates/calendar";
 
@@ -16,9 +17,7 @@ export function sidebarCounts(
   for (const event of events) {
     if (
       !overlaps(event.startDate, event.endDate, start, end) ||
-      !`${event.title} ${event.location} ${event.description}`
-        .toLowerCase()
-        .includes(query)
+      !eventMatchesSearch(event, query)
     )
       continue;
     if (

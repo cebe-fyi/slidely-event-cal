@@ -7,8 +7,8 @@ export default function SetupPage() {
       <h1>Your local calendar is ready.</h1>
       <p>
         This first version runs with fictional sample events. It needs no API
-        keys to deploy. Team login, shared storage, map view, and AI entry are
-        the next milestones.
+        keys to deploy. Country/city selectors and Map work with the demo data.
+        Team login, shared storage and AI entry are the next milestones.
       </p>
       <p className="setup-status">
         You are working locally for now. Events, categories, tags, and trash are

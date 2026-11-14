@@ -607,7 +607,7 @@ p {
 .setup-page {
   max-width: 800px;
   margin: 0 auto;
-  padding: var(--space-12) var(--space-6);
+  padding: var(--space-7) var(--space-6);
 }
 .setup-page > a {
   color: var(--muted);
@@ -1433,5 +1433,210 @@ p {
   }
   .view-control button:disabled {
     display: inline-flex;
+  }
+}
+
+/* Searchable dropdowns share one recipe in forms and future filter controls. */
+.combo-field {
+  position: relative;
+}
+.combo-input {
+  position: relative;
+}
+.combo-input input {
+  padding-right: var(--space-7);
+}
+.combo-input > svg {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--muted);
+}
+.combo-options {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  inset-inline: 0;
+  max-height: var(--layout-comboMaxHeight);
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover);
+  padding: var(--space-1);
+  background: var(--surface);
+}
+.combo-options > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  min-height: 36px;
+  border-radius: var(--radius-sm);
+}
+.combo-options > button:hover,
+.combo-options > .active {
+  background: var(--surface-muted);
+}
+.combo-options > p {
+  margin: 0;
+  padding: var(--space-3);
+  color: var(--muted);
+}
+.field-hint {
+  margin-top: var(--space-2);
+  color: var(--muted);
+}
+.combo-field input:disabled {
+  background: var(--surface-subtle);
+}
+.map-view {
+  min-width: 0;
+}
+.map-period-control {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  width: fit-content;
+  margin-bottom: var(--space-4);
+}
+.map-period-control button {
+  padding: var(--space-1-5) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+}
+.map-period-control .active {
+  background: var(--surface-muted);
+  color: var(--ink);
+}
+.map-workspace {
+  min-width: 0;
+}
+.map-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  color: var(--muted);
+}
+.map-frame {
+  position: relative;
+  isolation: isolate;
+  height: var(--layout-mapHeight);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.event-map {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-subtle);
+}
+.map-message {
+  position: absolute;
+  z-index: 1000;
+  top: var(--space-3);
+  left: var(--space-7);
+  right: var(--space-3);
+  background: var(--surface);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.event-map-marker {
+  background: transparent;
+  border: 0;
+}
+.map-marker-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--surface);
+  background: var(--event-color);
+  border: 2px solid var(--surface);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-popover);
+}
+.event-map .leaflet-bar {
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.event-map .leaflet-bar a {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.event-map .leaflet-control-attribution {
+  background: var(--surface);
+  color: var(--secondary);
+}
+.event-map .leaflet-control-attribution a {
+  color: var(--accent);
+}
+.map-popup-events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.map-popup-events button {
+  text-align: left;
+  color: var(--ink);
+  padding: var(--space-2);
+  background: var(--surface-muted);
+  border-radius: var(--radius-sm);
+}
+.map-event-index {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-6);
+}
+.map-index-event {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--line);
+  padding: var(--space-3) 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.map-index-event:hover {
+  background: var(--surface-subtle);
+}
+.map-index-event > span {
+  color: var(--muted);
+}
+.map-loading {
+  padding: var(--space-5);
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  .map-view {
+    grid-area: calendar;
+    margin: 0 var(--space-2-5) var(--space-3);
+    overflow-y: auto;
+  }
+  .map-frame {
+    height: var(--layout-mapHeightMobile);
+  }
+  .map-summary .secondary-button {
+    padding: var(--space-1-5) var(--space-2);
+  }
+  .map-summary {
+    align-items: flex-start;
+  }
+  .map-message {
+    left: var(--space-3);
+    top: var(--space-7);
   }
 }

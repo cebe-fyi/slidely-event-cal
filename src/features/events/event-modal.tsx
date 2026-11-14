@@ -9,6 +9,12 @@ import {
 } from "@/components/ui/modal";
 import type { Category, Tag, TeamEvent } from "./types";
 import { isValidDate } from "@/lib/dates/calendar";
+import { LocationFields } from "../locations/location-fields";
+import {
+  placeLabel,
+  type EventPlace,
+  type LocationKind,
+} from "../locations/types";
 
 type Props = {
   event: TeamEvent | null;
@@ -33,6 +39,15 @@ export function EventDialog({
 }: Props) {
   const [error, setError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [locationKind, setLocationKind] = useState<LocationKind>(
+    event?.locationKind ??
+      (event?.location.toLowerCase() === "online"
+        ? "online"
+        : event
+          ? "unknown"
+          : "city"),
+  );
+  const [place, setPlace] = useState<EventPlace | undefined>(event?.place);
   function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -55,12 +70,26 @@ export function EventDialog({
       setError("Use a website link beginning with https:// or http://.");
       return;
     }
+    if (locationKind === "city" && !place) {
+      setError("Choose a country and city, or select Location to confirm.");
+      return;
+    }
     onSave({
       id: event?.id ?? crypto.randomUUID(),
       title,
       startDate,
       endDate,
-      location: String(data.get("location") ?? "").trim(),
+      location:
+        locationKind === "online"
+          ? "Online"
+          : place
+            ? placeLabel(place)
+            : event?.locationKind === undefined ||
+                event?.locationKind === "unknown"
+              ? (event?.location ?? "")
+              : "",
+      locationKind,
+      place: locationKind === "city" ? place : undefined,
       categoryId: String(data.get("categoryId")),
       tagIds: data.getAll("tags").map(String),
       description: String(data.get("description") ?? "").trim(),
@@ -123,12 +152,12 @@ export function EventDialog({
             required
           />
         </div>
-        <FormField
-          name="location"
-          label="Location"
-          defaultValue={event?.location}
-          placeholder="City, country or Online"
-          maxLength={160}
+        <LocationFields
+          kind={locationKind}
+          place={place}
+          legacyLocation={event?.location}
+          onKindChange={setLocationKind}
+          onPlaceChange={setPlace}
         />
         <FormField
           name="categoryId"
