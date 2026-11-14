@@ -79,3 +79,7 @@ Country/city lookup uses the latest stable `country-state-city` 3.2.1, with the 
 ![Map with fictional demo events](docs/screenshots/map-demo.jpg)
 
 Additional previews: [country/city form](docs/screenshots/location-form.jpg) and [multi-day calendar strips](docs/screenshots/month-preview.jpg). These are static screenshots; running event data is stored separately in each browser.
+
+## Complete project snapshot
+
+All source and project documents (including plan.md and design documentation) are on main. Generated build folders and the full UI preview history are included as downloadable assets in the [project snapshot release](https://github.com/cebe-fyi/slidely-event-cal/releases/tag/project-snapshot-2026-11-14). See [project inventory](docs/project-inventory.md) for exact contents. Only .env.example exists; there are no private environment files in this project.
