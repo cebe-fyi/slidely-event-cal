@@ -1,0 +1,10 @@
+/* Slidely's official wordmark and black-on-white UI anchor this prototype.
+   Warm accent is sampled visually from the logo; exact brand token approval is pending. */
+:root {
+  --canvas: #ffffff;
+  --ink: #22241f;
+  --muted: #85877e;
+  --line: #e9eae3;
+  --accent: #ce4f2c;
+  --accent-light: #fcf0e9;
+}
