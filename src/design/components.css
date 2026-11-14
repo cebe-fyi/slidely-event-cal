@@ -37,7 +37,9 @@
   grid-area: brand;
   min-height: var(--layout-toolbarHeight);
   padding-inline-start: var(--sidebar-inset);
-  padding-inline-end: calc(var(--sidebar-inset) - var(--space-px));
+  padding-inline-end: calc(
+    var(--sidebar-inset) + var(--sidebar-scrollbar-width, 0px)
+  );
   background: var(--surface-subtle);
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -1161,27 +1163,13 @@ p {
 /* Permanent sidebar: edge-to-edge section rules and one compact, reusable filter row. */
 .sidebar-overview {
   padding-block: var(--space-2) var(--space-3);
-  padding-inline-start: var(--sidebar-inset);
-  padding-inline-end: max(
-    0px,
-    calc(
-      var(--sidebar-inset) - var(--sidebar-scrollbar-width, 0px) -
-        var(--space-px)
-    )
-  );
+  padding-inline: var(--sidebar-inset);
 }
 .filter-section {
   border-top: 1px solid var(--line);
   margin: 0;
   padding-block: var(--space-2);
-  padding-inline-start: var(--sidebar-inset);
-  padding-inline-end: max(
-    0px,
-    calc(
-      var(--sidebar-inset) - var(--sidebar-scrollbar-width, 0px) -
-        var(--space-px)
-    )
-  );
+  padding-inline: var(--sidebar-inset);
 }
 .section-label {
   display: flex;
@@ -1203,6 +1191,9 @@ p {
   position: relative;
   min-height: 36px;
   border-radius: var(--radius-md);
+  /* Equal highlight breathing room; checkbox/count alignment stays unchanged. */
+  margin-inline: calc(0px - var(--space-1));
+  padding-inline: var(--space-1);
 }
 .filter-row:hover,
 .filter-row:focus-within {
@@ -1270,6 +1261,13 @@ p {
   position: absolute;
   inset: 0;
   opacity: 0;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.item-options:hover {
+  background: transparent;
 }
 .filter-row-end:has(.item-options[aria-expanded="true"]) .filter-count {
   opacity: 0;

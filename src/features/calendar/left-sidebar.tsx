@@ -143,7 +143,9 @@ export function LeftSidebar(props: Props) {
   useEffect(() => {
     const element = scrollArea.current;
     if (!element) return;
-    // Scrollbars consume part of the right inset; don't add a second gutter.
+    // Keep the brand row aligned with the scrollable content. The scrollbar
+    // has its own lane; both content insets stay equal and independent of it.
+    const workspace = element.parentElement;
     const measure = () => {
       const style = getComputedStyle(element);
       const borders =
@@ -152,12 +154,15 @@ export function LeftSidebar(props: Props) {
         0,
         element.offsetWidth - element.clientWidth - borders,
       );
-      element.style.setProperty("--sidebar-scrollbar-width", `${width}px`);
+      workspace?.style.setProperty("--sidebar-scrollbar-width", `${width}px`);
     };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(element);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      workspace?.style.removeProperty("--sidebar-scrollbar-width");
+    };
   }, []);
   return (
     <>
