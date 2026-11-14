@@ -2,25 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type CSSProperties,
-} from "react";
+import { useState, useSyncExternalStore, type CSSProperties } from "react";
 import {
   ArrowUpRight,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
   ChevronsUpDown,
-  CircleHelp,
-  Filter,
   List,
+  House,
+  UserRound,
   MapPin,
-  PanelLeftClose,
-  PanelLeftOpen,
   PanelRightClose,
   PanelRightOpen,
   Plus,
@@ -113,22 +105,9 @@ export function CalendarWorkspace({ today }: { today: string }) {
   const [categories, setCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [leftClosed, toggleLeft] = usePanelPreference(
-    "slidely.events.leftClosed.v1",
-  );
   const [rightClosed, toggleRight] = usePanelPreference(
     "slidely.events.rightClosed.v1",
   );
-  const [mobileFilters, setMobileFilters] = useState(false);
-  const filtersPanel = useRef<HTMLElement>(null);
-  useEffect(() => {
-    if (mobileFilters) {
-      filtersPanel.current?.scrollIntoView({ block: "start" });
-      filtersPanel.current
-        ?.querySelector<HTMLButtonElement>(".mobile-only")
-        ?.focus();
-    }
-  }, [mobileFilters]);
   const [mobileList, setMobileList] = useState(false);
   const [editing, setEditing] = useState<TeamEvent | null | undefined>(
     undefined,
@@ -166,7 +145,6 @@ export function CalendarWorkspace({ today }: { today: string }) {
     setMonth(index);
     setView("month");
     setSelectedDay(null);
-    setMobileFilters(false);
   }
   function move(amount: number) {
     if (view === "year")
@@ -231,77 +209,36 @@ export function CalendarWorkspace({ today }: { today: string }) {
       <a className="skip-link" href="#calendar">
         Skip to calendar
       </a>
-      <header className="app-header">
-        <Link href="/" className="brand" aria-label="Slidely Events home">
-          <Image
-            src="/brand/slidely-wordmark.png"
-            alt="Slidely AI"
-            width={120}
-            height={28}
-            priority
-            className="brand-image"
-          />
-          <span className="brand-divider" />
-          <span className="product-name">Events</span>
-        </Link>
-        <div className="workspace-label">
-          <span className="workspace-dot" />
-          Team workspace
-        </div>
-        <div className="header-actions">
-          <span className="preview-badge">Local preview</span>
-          <Link
-            className="icon-button help-link"
-            href="/setup"
-            aria-label="Setup and deployment guide"
-          >
-            <CircleHelp size={19} />
-          </Link>
-          <span className="team-avatar" aria-label="Slidely team preview">
-            S
-          </span>
-        </div>
-      </header>
-      <div className="preview-strip">
-        <Sparkles size={14} />
-        <span>
-          <strong>Your local calendar preview.</strong> Saved in this browser ·
-          Not shared with the team
-        </span>
-        <Link href="/setup">
-          Setup guide <ArrowUpRight size={13} />
-        </Link>
-      </div>
       {storageError && editing === undefined && !managing && (
         <p className="storage-error" role="alert">
           {storageError}
         </p>
       )}
-      <div
-        className={`workspace ${leftClosed ? "left-collapsed" : ""} ${rightClosed ? "right-collapsed" : ""}`}
-      >
+      <div className={`workspace ${rightClosed ? "right-collapsed" : ""}`}>
         <aside
-          ref={filtersPanel}
-          className={`left-panel ${mobileFilters ? "mobile-open" : ""}`}
+          className="left-panel"
           aria-label="Calendar navigation and filters"
           id="filters-panel"
         >
-          <div className="panel-title">
-            <span>Explore events</span>
-            <button
-              className="icon-button desktop-only"
-              aria-label="Collapse navigation"
-              onClick={toggleLeft}
+          <div className="sidebar-brand">
+            <Link href="/" className="brand" aria-label="Slidely Events home">
+              <Image
+                src="/brand/slidely-wordmark.png"
+                alt="Slidely AI"
+                width={120}
+                height={28}
+                priority
+                className="brand-image"
+              />
+            </Link>
+            <Link
+              href="/setup"
+              className="icon-button"
+              aria-label="Local workspace information"
+              title="Local sample workspace · Setup information"
             >
-              <PanelLeftClose size={17} />
-            </button>
-            <button
-              className="icon-button mobile-only"
-              aria-label="Close filters"
-              onClick={() => setMobileFilters(false)}
-            >
-              <X size={18} />
-            </button>
+              <UserRound size={18} />
+            </Link>
           </div>
           <div className="year-selector">
             <button
@@ -368,7 +305,6 @@ export function CalendarWorkspace({ today }: { today: string }) {
             onClick={() => {
               setView("year");
               setSelectedDay(null);
-              setMobileFilters(false);
             }}
           >
             <CalendarDays size={15} /> View all of {year}
@@ -454,114 +390,106 @@ export function CalendarWorkspace({ today }: { today: string }) {
           </div>
           <div className="sidebar-footer">
             <span className="workspace-dot" />
-            Made for the Slidely team
+            Sample data · Saved in this browser
           </div>
         </aside>
+
+        <header className="calendar-toolbar" aria-label="Calendar controls">
+          <div className="period-navigation">
+            <button
+              className="icon-button home-button"
+              aria-label="Go to current month"
+              onClick={() => {
+                setYear(todayYear);
+                setMonth(todayMonth - 1);
+                setView("month");
+                setSelectedDay(null);
+              }}
+            >
+              <House size={20} />
+            </button>
+            <h2>{periodLabel}</h2>
+            <div className="period-arrows">
+              <button
+                className="icon-button"
+                aria-label={
+                  view === "month" ? "Previous month" : "Previous period year"
+                }
+                onClick={() => move(-1)}
+              >
+                <ChevronLeft size={17} />
+              </button>
+              <button
+                className="icon-button"
+                aria-label={
+                  view === "month" ? "Next month" : "Next period year"
+                }
+                onClick={() => move(1)}
+              >
+                <ChevronRight size={17} />
+              </button>
+            </div>
+            <button
+              className="today-button"
+              onClick={() => {
+                setYear(todayYear);
+                setMonth(todayMonth - 1);
+                setSelectedDay(null);
+              }}
+            >
+              Today
+            </button>
+          </div>
+          <div className="view-control" aria-label="Calendar view">
+            <button
+              aria-pressed={view === "month"}
+              className={view === "month" ? "active" : ""}
+              onClick={() => {
+                setView("month");
+                setSelectedDay(null);
+              }}
+            >
+              Month
+            </button>
+            <button
+              aria-pressed={view === "year"}
+              className={view === "year" ? "active" : ""}
+              onClick={() => {
+                setView("year");
+                setSelectedDay(null);
+              }}
+            >
+              Year
+            </button>
+            <button disabled title="Available after map setup">
+              <MapPin size={13} />
+              Map
+            </button>
+          </div>
+          {rightClosed && (
+            <button
+              className="icon-button desktop-only"
+              aria-label="Expand event list"
+              onClick={toggleRight}
+            >
+              <PanelRightOpen size={18} />
+            </button>
+          )}
+          <button
+            className="primary-button add-event"
+            onClick={() => setEditing(null)}
+            aria-label="Add event"
+          >
+            <Plus size={16} />
+            <span>Add event</span>
+          </button>
+        </header>
 
         <main
           className={`calendar-main ${mobileList ? "show-mobile-list" : ""}`}
           id="calendar"
         >
-          <div className="page-heading">
-            <div>
-              <div className="breadcrumb">
-                Workspace <ChevronRight size={12} /> Events & conferences
-              </div>
-              <h1>
-                Your next connection
-                <br className="mobile-only" /> starts here.
-              </h1>
-              <p>
-                A shared view of the places and ideas that bring us together.
-              </p>
-            </div>
-            <button
-              className="primary-button add-event"
-              onClick={() => setEditing(null)}
-            >
-              <Plus size={17} />
-              Add event
-            </button>
-          </div>
-          <div className="calendar-toolbar">
-            <div className="period-navigation">
-              {leftClosed && (
-                <button
-                  className="icon-button desktop-only"
-                  aria-label="Expand navigation"
-                  onClick={toggleLeft}
-                >
-                  <PanelLeftOpen size={18} />
-                </button>
-              )}
-              <h2>{periodLabel}</h2>
-              <div className="period-arrows">
-                <button
-                  className="icon-button"
-                  aria-label={
-                    view === "month" ? "Previous month" : "Previous period year"
-                  }
-                  onClick={() => move(-1)}
-                >
-                  <ChevronLeft size={17} />
-                </button>
-                <button
-                  className="icon-button"
-                  aria-label={
-                    view === "month" ? "Next month" : "Next period year"
-                  }
-                  onClick={() => move(1)}
-                >
-                  <ChevronRight size={17} />
-                </button>
-              </div>
-              <button
-                className="today-button"
-                onClick={() => {
-                  setYear(todayYear);
-                  setMonth(todayMonth - 1);
-                  setSelectedDay(null);
-                }}
-              >
-                Today
-              </button>
-            </div>
-            <div className="view-control" aria-label="Calendar view">
-              <button
-                aria-pressed={view === "month"}
-                className={view === "month" ? "active" : ""}
-                onClick={() => {
-                  setView("month");
-                  setSelectedDay(null);
-                }}
-              >
-                Month
-              </button>
-              <button
-                aria-pressed={view === "year"}
-                className={view === "year" ? "active" : ""}
-                onClick={() => {
-                  setView("year");
-                  setSelectedDay(null);
-                }}
-              >
-                Year
-              </button>
-              <button disabled title="Available after map setup">
-                <MapPin size={13} />
-                Map
-              </button>
-            </div>
-            {rightClosed && (
-              <button
-                className="icon-button desktop-only"
-                aria-label="Expand event list"
-                onClick={toggleRight}
-              >
-                <PanelRightOpen size={18} />
-              </button>
-            )}
-          </div>
+          <h1 className="sr-only">Events and conferences</h1>
           <div className="search-toolbar">
             <label className="search-field">
               <Search size={16} />
@@ -582,15 +510,6 @@ export function CalendarWorkspace({ today }: { today: string }) {
                 Clear {activeCount} filters <X size={12} />
               </button>
             )}
-            <button
-              className="secondary-button mobile-only"
-              onClick={() => setMobileFilters((v) => !v)}
-              aria-expanded={mobileFilters}
-              aria-controls="filters-panel"
-            >
-              <Filter size={14} />
-              Filters{activeCount ? ` (${activeCount})` : ""}
-            </button>
           </div>
           <div className="mobile-view-switch mobile-only">
             <button

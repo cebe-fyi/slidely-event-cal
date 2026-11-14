@@ -33,7 +33,8 @@ export default function SetupPage() {
           </li>
           <li>
             Use the settings icon beside Categories or Tags to create, edit,
-            merge, and delete them. On a phone-sized screen, open Filters first.
+            merge, and delete them. The left sidebar stays visible on
+            phone-sized screens too.
           </li>
           <li>Use Trash in the sidebar to restore deleted events.</li>
         </ol>

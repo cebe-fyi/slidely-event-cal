@@ -40,11 +40,12 @@ These choices do not block a local mock-data prototype.
 
 ### 2.1 Desktop layout
 
-- Header: Slidely identity, current month/year, previous/next, Today, Month / Year / Map switch, search, Add event, and account menu.
-- Left panel: year navigation, twelve month buttons, category legend/filters, tag filters, and management entry points.
+- Full-height left sidebar: Slidely identity and workspace-information icon at the top, followed by year navigation, twelve month buttons, category legend/filters, tag filters, and management entry points. It stays visible and has no collapse control.
+- Compact calendar toolbar above the center and right panel: Home/current month, selected month/year, previous/next, Today, Month / Year / Map switch, and Add event. Remove the previous global navbar, local-preview banner, and introductory heading. Search stays above the calendar grid.
 - Center: selected calendar or map view, with loading, empty, and error states.
 - Right panel: events for the selected period, in ascending date order, grouped under readable date headings. Show title, date range, location/Online, category, and useful tags. Do not show times.
-- Both panels collapse independently. Retain an accessible button to reopen each panel and save the preference locally. The center expands into the freed space.
+- Only the right panel collapses. Retain an accessible button to reopen it and save that preference locally. The center expands into the freed space; the left sidebar remains full-height and visible regardless of any old saved left-collapse preference.
+- Use consistently thin scrollbars for the left sidebar, calendar content, right event list, and dialogs.
 - Clicking an event opens a details sheet with source link, description, edit, and delete actions.
 
 ### 2.2 Monthly calendar
@@ -132,7 +133,7 @@ Flow: paste public event URL -> validate URL -> Gemini reads the source -> show 
 
 ### 2.10 Mobile and accessibility
 
-- Use a single primary surface with Calendar / List / Map navigation. Left filters open in a drawer; the event list opens as the main list or a bottom sheet. Avoid squeezing three columns onto a phone.
+- Keep a narrower permanent left navigation/filter rail on phone-sized screens. The remaining space switches between Calendar and Event list, so the full desktop right column is not squeezed into the phone layout. The left sidebar has no collapsed/drawer state.
 - Small month cells show dots/counts; selecting a date reveals readable event cards. Year view reflows rather than shrinking illegibly.
 - Keep Add event visible; use a full-screen form on small screens. Preserve unsaved input and show confirmation before discarding it.
 - Target comfortable touch controls (about 44 px), visible keyboard focus, labeled icon buttons/forms, logical tab order, accessible dialogs, and reduced-motion support.
@@ -392,7 +393,7 @@ Complete one working slice at a time. A later milestone is not permission to omi
 ### Human acceptance
 
 - [ ] Slidely branding visually verified; screenshot times/unrelated widgets excluded.
-- [ ] Both panels collapse/reopen; left month/year navigation drives the correct right list.
+- [ ] Left sidebar stays full-height and visible; only the right panel collapses/reopens; left month/year navigation drives the correct right list.
 - [ ] Month/year/map display the same matching events and category colors.
 - [ ] Multi-day and cross-year events behave correctly; online/unlocated events stay discoverable.
 - [ ] Categories and tags support all requested management operations with an impact preview.
@@ -453,3 +454,5 @@ Supporting official documentation (checked during planning; recheck when impleme
 - 2026-11-14: User requested local development before GitHub upload. Stopped the pending GitHub device authorization. No code was uploaded and no deployment was created.
 - 2026-11-14: Added versioned browser-local workspace storage with validation, atomic category/tag changes including trashed-event associations, duplicate-name protection, merge/delete impact previews, recoverable event trash, and visible errors for failed storage. Added `Start calendar.cmd` for reopening without terminal commands. Exact local origin is `http://127.0.0.1:3000`; this browser-only storage is not shared or backed up.
 - 2026-11-14: Verified category create/rename/duplicate rejection, impact preview and merge reassignment, local event save across reload, tag create/delete, trash/restore, and mobile management layout at 390px. Native dialog keyboard handling remains intact and browser error logs are empty. Production build, strict TypeScript, lint, and all 10 tests pass. Saved local screenshot in ignored `artifacts/calendar-local.jpg`. No push or deployment performed.
+- 2026-11-14: User requested layout-only refinement while keeping local sample data: removed global navbar and preview banner, moved Slidely identity into the permanent full-height left sidebar, consolidated calendar controls into a compact toolbar, removed introductory heading and all left-collapse controls/state, retained right-panel collapse/reopen, and applied thin scrollbars throughout. Updated the responsive layout to retain a narrow permanent left rail. No service integrations, uploads, or sample-data changes included.
+- 2026-11-14: Layout verified in-browser at desktop and 360/390px phone widths: left sidebar bounds start at y=0 and fill the viewport, no left-collapse controls exist, right collapse/reopen preserves the left rail, mobile list remains usable with a saved desktop right-collapse preference, and no horizontal overflow or browser errors were observed. TypeScript, lint, and production build pass. Preview screenshot: ignored `artifacts/calendar-layout.jpg`.
